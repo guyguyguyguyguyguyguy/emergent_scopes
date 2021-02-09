@@ -62,6 +62,15 @@ class Parallel(Scheduler):
         for a in order: 
             other_agents = [x for x in current_state if x is not a]
             func(a, other_agents)
+    
+        try:
+            # Think this changes the model agent list in place
+            # This isn't exactly what we want but its on the right lines, maybe?
+            agent_list[:] = current_state
+        except:
+            pass
+        else:
+            pass
 
 
 class Concurrent(Scheduler):
