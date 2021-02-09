@@ -2,13 +2,15 @@ import random
 from typing import List 
 from model import *
 from composition_behaviours import Behaviour 
+from __future__ import annotations
+from collections.abc import Sequence, Iterable
 
 
 class Agent():
 
     """Docstring for Agent. """
 
-    def __init__(self, *behaviours: List[Behaviour], model: Model) -> None:
+    def __init__(self, *behaviours: Iterable[Behaviour], model: Model) -> None:
         """.
             Initalise Agent class with n number of composite behaviours.
 
