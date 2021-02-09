@@ -2,6 +2,7 @@ import pygame
 from composition_behaviours import *
 from agent import *
 
+
 class Model(object):
 
     """
@@ -20,8 +21,31 @@ class Model(object):
         behaviours = [RandMov()] 
         self.agents = [Agent(behaviours, model=self) for x in range(num_Agents)]
 
-    def run(self) -> None:
+        #This is for pygame
+        pygame.init()
+        self.screen = pygame.display.set_mode([width, height])
+    
+    def visualise(self) -> None:
+        done = False
+        clock = pygame.time.Clock()
+        
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    done = True
+            self.tick()
+            self.screen.fill((0, 0, 0))
+            for a in self.agents:
+                pygame.draw.circle(self.screen, (255, 255, 255), a.pos, 10)
+            
+            clock.tick(60)
+            pygame.display.flip()
+
+        pygame.quit()
+
+
+    def tick(self) -> None:
         for a in self.agents:
             a.step()
 
-        
+    
