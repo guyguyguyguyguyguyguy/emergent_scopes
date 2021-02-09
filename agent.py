@@ -1,5 +1,5 @@
 import random
-from typing import Type
+from typing import List 
 from model import *
 from composition_behaviours import Behaviour 
 
@@ -8,7 +8,7 @@ class Agent():
 
     """Docstring for Agent. """
 
-    def __init__(self, *behaviours: list[Type[Behaviour]], model: Model) -> None:
+    def __init__(self, *behaviours: List[Behaviour], model: Model) -> None:
         """.
             Initalise Agent class with n number of composite behaviours.
 
@@ -20,7 +20,13 @@ class Agent():
         self.pos = [random.choice(range(model.width)), random.choice(range(model.height))]
 
 
-    def step(self, other_agents: list[Type[Agent]]) -> None:
+    def __eq__(self, o: Agent) -> bool:
+        if self.pos == o.pos:
+            return True
+        else:
+            return False
+
+    def step(self, other_agents: List[Agent]) -> None:
         """
             Allows each of Agents behaviours to act. Is dependent on the order of *behviours so need to be careful
         """

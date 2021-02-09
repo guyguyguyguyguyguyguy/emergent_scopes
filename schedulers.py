@@ -3,6 +3,7 @@ import copy
 from helper import abstractstatic
 from agent import Agent
 from typing import Callable, Iterator, Type
+import sys
 
 
 class Scheduler:
@@ -66,9 +67,16 @@ class Parallel(Scheduler):
         try:
             # Think this changes the model agent list in place
             # This isn't exactly what we want but its on the right lines, maybe?
+            equal_agents = [[x,y] for x in current_state for y in current_state if x==y]
+            for pair in equal_agents:
+                blocked = random.choice(pair)
+                # Replacing updated agent in current_state with the state of the agent in the previous tick as it has been blocked from is behaviour by another agent that is occupying the same phase space (with assumption that no two agents can occupy same phase space)
+                # This is context specific, == has to be defined for agents in a certain manner
+                current_state[current_state.index(blocked)] = agent_list[agent_list.index(blocked)]
             agent_list[:] = current_state
         except:
-            pass
+            print("Could not combine agents in current tick")
+            sys.exit(1)
         else:
             pass
 
