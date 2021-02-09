@@ -1,6 +1,8 @@
+from schedulers import Scheduler
 import pygame
 from composition_behaviours import *
 from agent import *
+from helper import agent_step
 
 
 class Model(object):
@@ -9,7 +11,7 @@ class Model(object):
         Model for simulating emergence at multiple scales
     """
 
-    def __init__(self, width: int = 50, height: int = 50, num_Agents: int = 20) -> None:
+    def __init__(self, width: int = 50, height: int = 50, num_Agents: int = 20, scheduler: Scheduler = None) -> None:
         """
             Initalise model
 
@@ -18,6 +20,7 @@ class Model(object):
         """
         self.width = width
         self.height = height
+        self.scheduler = scheduler
         behaviours = [RandMov()] 
         self.agents = [Agent(behaviours, model=self) for x in range(num_Agents)]
 
@@ -25,7 +28,7 @@ class Model(object):
         pygame.init()
         self.screen = pygame.display.set_mode([width, height])
     
-    def visualise(self) -> None:
+    def run(self) -> None:
         done = False
         clock = pygame.time.Clock()
         
@@ -44,8 +47,7 @@ class Model(object):
         pygame.quit()
 
 
+    #sort parralell and asynchornos scheduling
     def tick(self) -> None:
-        for a in self.agents:
-            a.step()
-
+        self.scheduler.scheduling(self.agents, agent_step) 
     

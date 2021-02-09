@@ -20,9 +20,11 @@ class Agent():
         self.pos = [random.choice(range(model.width)), random.choice(range(model.height))]
 
 
-    def step(self) -> None:
+    def step(self, other_agents: list[Type[Agent]]) -> None:
         """
             Allows each of Agents behaviours to act. Is dependent on the order of *behviours so need to be careful
         """
+        # Envisage some of these taking a list of other agents, hence why this method takes a list of agents
+        # Depending on scheduling class used in mode, this will either be a copy or the current
         for x in self.behaviours:
-            x.step()
+            x.step(self)
