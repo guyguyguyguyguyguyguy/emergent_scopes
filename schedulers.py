@@ -2,7 +2,7 @@ from random import random
 import copy
 from helper import abstractstatic
 from agent import Agent
-from typing import Callable, Iterator, Type
+from typing import Callable, Iterator, List
 import sys
 
 
@@ -17,7 +17,7 @@ class Scheduler:
 
 
     @abstractstatic
-    def scheduling(agent_list: list[Type[Agent]], func: Callable[[Agent, list[Type[Agent]]], None]) -> None:
+    def scheduling(agent_list: List[Agent], func: Callable[[Agent, List[Agent]], None]) -> None:
         pass
 
 
@@ -29,12 +29,12 @@ class Asynchronous(Scheduler):
     
     #possibly some generator but probably no need with random sample
     #@staticmethod
-    #def sample_agents(agent_list: list[Type[Agent]]) -> Iterator[Agent]:
+    #def sample_agents(agent_list: List[Type[Agent]]) -> Iterator[Agent]:
     #   pass     
 
     
     @staticmethod
-    def scheduling(agent_list: list[Type[Agent]], func: Callable[[Agent, list[Type[Agent]]], None]) -> None:
+    def scheduling(agent_list: List[Agent], func: Callable[[Agent, List[Agent]], None]) -> None:
         order = random.sample(agent_list, len(agent_list))
         for a in order:
             other_agents = [x for x in agent_list if x is not a]
@@ -53,19 +53,33 @@ class Parallel(Scheduler):
         super().__init__()
 
     
-    # Make a deep copy of agent list after the previous tick and each one sees this instead of the updated one
+    # Make a deep copy of agent List after the previous tick and each one sees this instead of the updated one
     # Pretty sure deepcopy is the correct function 
     # Need to add cases, to ensure that no errors occur
     @staticmethod
-    def scheduling(agent_list: list[Type[Agent]], func: Callable[[Agent, list[Type[Agent]]], None]) -> None:
+    def scheduling(agent_list: List[Agent], func: Callable[[Agent, List[Agent]], None]) -> None:
         current_state = copy.deepcopy(agent_list)
         order = random.sample(agent_list, len(agent_list))
         for a in order: 
             other_agents = [x for x in current_state if x is not a]
             func(a, other_agents)
     
+        agent_list[:] = self.__clash_solution(current_state)
+        
+    
+    @staticmethod
+    def __clash_solution(agent_list: List[Agent]) -> List[Agent]:
+        """
+            Want to check each of the possible behaviours:
+                -> See if there are any conditionals
+                -> If so, test whether these conditionals are broken by another agents move
+                -> Solve conflicts:
+                    - This will incur randomness as conflicts solved randomly
+                -> Return 'conflict-free list of agents'
+        """
+
         try:
-            # Think this changes the model agent list in place
+            # Think this changes the model agent List in place
             # This isn't exactly what we want but its on the right lines, maybe?
             equal_agents = [[x,y] for x in current_state for y in current_state if x==y]
             for pair in equal_agents:
@@ -88,5 +102,5 @@ class Concurrent(Scheduler):
 
 
     @staticmethod
-    def scheduling(agent_list: list[Type[Agent]], func: Callable[[Agent, list[Type[Agent]]], None]) -> None:
+    def scheduling(agent_list: List[Agent], func: Callable[[Agent, List[Agent]], None]) -> None:
         pass
