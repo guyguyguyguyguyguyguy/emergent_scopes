@@ -1,6 +1,6 @@
 from random import random
 import copy
-from helper import abstractstatic
+from abc import abstractmethod 
 from agent import Agent
 from typing import Callable, Iterator, List
 import sys
@@ -16,7 +16,8 @@ class Scheduler:
         pass
 
 
-    @abstractstatic
+    @abstractmethod
+    @staticmethod
     def scheduling(agent_list: List[Agent], func: Callable[[Agent, List[Agent]], None]) -> None:
         pass
 
@@ -69,19 +70,12 @@ class Parallel(Scheduler):
     @staticmethod
     def __clash_solution(previous_state: List[Agent], next_state: List[Agent]) -> List[Agent]:
         """
-            Want to check each of the possible behaviours:
-                -> See if there are any conditionals
-                -> If so, test whether these conditionals are broken by another agents move
-                -> Solve conflicts:
-                    - This will incur randomness as conflicts solved randomly
-                -> Return 'conflict-free list of agents'
-
-            $Not possible$
-
-            Maybe:
-                -> User writes conditions that should not be broken
-                    - Would be nice to derive these conditons from the behaviours
-                -> Then check for conflicts of these conditions and solve
+            -> User writes conditions that should not be broken
+                - Would be nice to infer these conditons from the behaviours
+            -> Then check for conflicts of these conditions and solve
+            
+            Maybe instead, each behaviour defines what equality is ( == ), then can carry out code below
+                -> Would still then want to use the resolution
         """
 
         try:

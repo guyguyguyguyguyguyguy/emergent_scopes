@@ -1,13 +1,7 @@
 from agent import Agent
-from typing import Type
+from typing import Type, List
 
-def agent_step(agent: Agent, other_agents: list[Type[Agent]]):
+def agent_step(agent: Agent, other_agents: List[Agent]):
    agent.step(other_agents) 
 
 
-class abstractstatic(staticmethod):
-    __slots__ = ()
-    def __init__(self, function):
-        super(abstractstatic, self).__init__(function)
-        function.__isabstractmethod__ = True
-    __isabstractmethod__ = True

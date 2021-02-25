@@ -10,7 +10,7 @@ class Agent():
 
     """Docstring for Agent. """
 
-    def __init__(self, *behaviours: Iterable[Behaviour], model: Model) -> None:
+    def __init__(self, behaviours: Iterable[Behaviour], model: Model) -> None:
         """.
             Initalise Agent class with n number of composite behaviours.
 

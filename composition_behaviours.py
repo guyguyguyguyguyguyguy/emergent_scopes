@@ -1,24 +1,25 @@
-from abc import abstractclassmethod, abstractmethod, abstract_attribute
+from abc import abstractclassmethod, abstractmethod
 import random
-from helper import abstractstatic
+from typing import List, Tuple
 from agent import Agent 
 
 
 @abstractclassmethod
 class Behaviour:
    
-    @abstract_attribute
-    def constraints(self) -> dict[str, Callable[List[Agents], bool]]:
-        pass
-
-    
-    @abstractstatic
-    def constraint(agents: List[Agent]) -> bool:
+    @property
+    @abstractmethod
+    def constraints(self):
         pass
 
 
-    @abstractstatic
-    def resolution(agents: List[Agent, List[Agent]]) -> None:
+    @abstractmethod
+    def constraint(anget: List[Agent]) -> List[Tuple[Agent, List[Agent]]]:
+        pass
+
+
+    @abstractmethod 
+    def resolution(agents: List[Tuple[Agent, List[Agent]]]) -> None:
         pass
 
 
@@ -34,34 +35,50 @@ class RandMov(Behaviour):
         Takes an agents current position and returns a new position depending on agents step size
     """ 
 
-    constraints = {"no overlap": self.constraint} 
 
     def __init__(self) -> None:
         self.step_size = random.randint(1, 10) 
+  
 
+    @property
+    def constraints(self):
+        return self._constrains
 
-    @staticmethod
-    def constraint(agents: List[Agent]) -> bool:
+    @constraints.setter
+    def constraints(self): 
+        self._constrains = {"no overlap": self.overlap_constraint} 
+    
+
+    def overlap_constraint(self, agents: List[Agent]) -> List[Tuple[Agent, List[Agent]]]:
         """
             Return either bool of whether conflicts resolved by resolution 
             orrr
             Return list of list of conflicting agent with others, although this leads to duplicates
         """
-        conflicts = []
+        conflicts = [] 
         for a in agents:
-            while other := len([o for o in agents if o is not a and o.x != a.x and o.y != a.y]) > 0:
-               # resolution([a].append(others)) 
-                conflicts.append([a].append(others))
+            a_conflict = (a, )
+            other = [o for o in agents if o is not a and o.pos != a.pos]
+            conflicting_agents = (*a_conflict, other)
+            conflicts.append(conflicting_agents)
+            self.resolution(conflicting_agents) 
         return conflicts
-    
+
+
+    def resolution(self, agents: Tuple[Agent, List[Agent]]) -> None:
+        """
+            Resloves agents that share the same space by small collision between them
+        """
+        a, other = agents
+        self.collision([a, *other])
+
 
     @staticmethod
-    def resolution(List[Agent, List[Agent]]) -> None:
-       pass 
-        
-        
+    def collision(elements: List[Agent]) -> None:
+        #TODO: Sort this method, however, only needed for parallel shit 
+        pass
 
-    @staticmethod
+        
     def step(self, agent : Agent) -> None:
         """
             Move agent that this instance belong to by a random vector, scaled by step size
