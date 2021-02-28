@@ -1,8 +1,9 @@
-from schedulers import Scheduler
+from schedulers import *
 import pygame
 from composition_behaviours import *
 from agent import *
 from helper import agent_step
+from typing import TypeVar, Type
 
 
 class Model(object):
@@ -11,7 +12,7 @@ class Model(object):
         Model for simulating emergence at multiple scales
     """
 
-    def __init__(self, width: int = 50, height: int = 50, num_Agents: int = 20, scheduler: Scheduler = None) -> None:
+    def __init__(self, width: int = 50, height: int = 50, num_Agents: int = 20, scheduler: Type[Scheduler] = Asynchronous) -> None:
         """
             Initalise model
 
