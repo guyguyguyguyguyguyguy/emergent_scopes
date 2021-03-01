@@ -1,8 +1,8 @@
 from __future__ import annotations
 import random
-from typing import List 
-import model 
-from composition_behaviours import Behaviour 
+from typing import List
+import model
+from composition_behaviours import Behaviour
 from collections.abc import Sequence, Iterable
 
 
@@ -14,11 +14,14 @@ class Agent:
         """.
             Initalise Agent class with n number of composite behaviours.
 
-            Parameters: 
+            Parameters:
                 *behaviours (list) : Defines all behaviours recieved by Agent.
         """
-        
+
+        self.radius = random.randint(1, 5)
+        self.v = [0, 0]
         self.behaviours = behaviours
+        self.model = model
         self.pos = [random.choice(range(model.width)), random.choice(range(model.height))]
 
 

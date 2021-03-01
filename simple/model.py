@@ -8,7 +8,7 @@ import schedulers
 
 
 def agent_step(agent: agent.Agent, other_agents: List[agent.Agent]):
-       agent.step(other_agents) 
+       agent.step(other_agents)
 
 
 class Model:
@@ -17,21 +17,25 @@ class Model:
         Model for simulating emergence at multiple scales
     """
 
-    def __init__(self, width: int = 50, height: int = 50, num_Agents: int = 20, scheduler: Type[schedulers.Scheduler] = schedulers.Asynchronous) -> None:
+    def __init__(self, width: int = 50, height: int = 50, num_agents: int = 20, scheduler: Type[schedulers.Scheduler] = schedulers.Asynchronous) -> None:
         """
             Initalise model
 
             Parameters:
-                num_Agents (int) : number of agents initalised in mode
+                num_agents (int) : number of agents initalised in mode
+                width (int) : width of pygame window
+                height (int) : height of pygame window
+                scheduler (Scheduler) : method by which agents are scheduled to perform their step method at every tick
         """
         self.width = width
         self.height = height
         self.scheduler = scheduler
-        behaviours = [composition_behaviours.RandMov()] 
-        self.agents = [agent.Agent(behaviours, model=self) for x in range(num_Agents)]
+        self.behaviours = [composition_behaviours.RandMov()]
+        self.num_agents = num_agents
+        self.agents = [agent.Agent(self.behaviours, model=self) for x in range(num_agents)]
 
         #This is for pygame
-    
+
     def run(self) -> None:
         done = False
         pygame.init()
@@ -42,10 +46,15 @@ class Model:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     done = True
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        done = True
+                    if event.key == pygame.K_r:
+                        self.agents = [agent.Agent(self.behaviours, model=self) for x in range(self.num_agents)]
             self.screen.fill((0, 0, 0))
             for a in self.agents:
-                pygame.draw.circle(self.screen, (255, 255, 255), a.pos, 10)
-            
+                pygame.draw.circle(self.screen, (255, 255, 255), a.pos, a.radius)
+
             self.tick()
             clock.tick(60)
             pygame.display.flip()
@@ -55,5 +64,5 @@ class Model:
 
     #sort parralell and asynchornos scheduling
     def tick(self) -> None:
-        self.scheduler.scheduling(self.agents, agent_step) 
-    
+        self.scheduler.scheduling(self.agents, agent_step)
+
