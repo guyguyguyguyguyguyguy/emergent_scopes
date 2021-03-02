@@ -149,6 +149,7 @@ class Adhesion(Behaviour):
                 -> If so, move closer to this agent (based on strength)
                 -> Don't get stuck inside other agent
         """
+        [ print(helper.distance(agent, x)) for x in agent.model.agents]
         if close_others := [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) < self.strength and self in x.behaviours]:
             print("others")
             self.attract(agent, close_others) 
