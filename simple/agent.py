@@ -4,6 +4,40 @@ from typing import List
 import model
 from composition_behaviours import Behaviour
 from collections.abc import Sequence, Iterable
+from dataclasses import dataclass
+
+
+@dataclass
+class Pos:
+    x: float
+    y: float
+
+    def __repr__(self):
+        return repr([self.x, self.y])
+
+
+    def __getitem__(self, k: int) -> float:
+             return [self.x, self.y][k]
+
+
+    def __setitem__(self, k: int, v:float) -> None:
+        self[k] = v
+
+
+    def __eq__(self, o: Pos) -> bool:
+        if self.x == o.x and self.y == o.y:
+            return True
+        else:
+            return False
+
+
+    def __iter__(self) -> Iterable[float]:
+        return iter([self.x, self.y])
+
+
+    # Don't know what type to give x
+    def __add__(self, x) -> Pos:
+        return Pos(self.x + x[0], self.y + x[1])
 
 
 class Agent:
@@ -22,7 +56,7 @@ class Agent:
         self.v = [0, 0]
         self.behaviours = behaviours
         self.model = model
-        self.pos = [random.choice(range(model.width)), random.choice(range(model.height))]
+        self.pos = [ random.choice(range(model.width)), random.choice(range(model.height)) ]
 
 
     def __eq__(self, o: Agent) -> bool:

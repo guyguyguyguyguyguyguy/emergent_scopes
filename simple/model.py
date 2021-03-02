@@ -1,5 +1,7 @@
 from __future__ import annotations
+import numpy as np
 import pygame
+import random
 import agent
 import composition_behaviours 
 #from helper import agent_step
@@ -30,11 +32,10 @@ class Model:
         self.width = width
         self.height = height
         self.scheduler = scheduler
-        self.behaviours = [composition_behaviours.RandMov()]
+        self.behaviours = [composition_behaviours.RandMov(), composition_behaviours.Adhesion()]
         self.num_agents = num_agents
-        self.agents = [agent.Agent(self.behaviours, model=self) for x in range(num_agents)]
-
-        #This is for pygame
+        self.agents = [agent.Agent(random.sample(self.behaviours, k= random.randint(2, len(self.behaviours))), model=self) for x in range(num_agents)]
+        
 
     def run(self) -> None:
         done = False

@@ -1,15 +1,12 @@
 from __future__ import annotations
 from abc import abstractclassmethod, abstractmethod, ABC
 import random
+import numpy as np
+from itertools import combinations
 from typing import List, Tuple
 from operator import add
 import helper
 import agent 
-#TODO: type hinting with agent: agent.Agent but this is circular importing so need to find solution
-
-
-# Element-wise list addition 'MACRO'
-elem_add = lambda x, y: list(map(add, x, y))
 
 
 class Behaviour(ABC):
@@ -49,6 +46,43 @@ class RandMov(Behaviour):
             agent.v[1] = -agent.v[1]
 
 
+    @staticmethod
+    def collide(agent: agent.Agent, other_agents: List[agent.Agent]) -> None:
+        """Detect and handle any collisions between the Particles.
+
+        When two Particles collide, they do so elastically: their velocities
+        change such that both energy and momentum are conserved.
+
+            agent (Agent) : agent that function was called by 
+            other_agents (List) : list of other agents involved in collision
+
+        """
+
+        def change_velocities(p1, p2) -> None:
+            """
+            Particles p1 and p2 have collided elastically: update their
+            velocities.
+
+            """
+
+            m1, m2 = np.array(p1.radius**2), np.array(p2.radius**2)
+            M = m1 + m2
+            r1, r2 = np.array(p1.pos), np.array(p2.pos)
+            d = np.linalg.norm(r1 - r2)**2
+            v1, v2 = np.array(p1.v), np.array(p2.v)
+            u1 = v1 - 2*m2 / M * np.dot(v1-v2, r1-r2) / d * (r1 - r2)
+            u2 = v2 - 2*m1 / M * np.dot(v2-v1, r2-r1) / d * (r2 - r1)
+            p1.v = u1
+            p2.v = u2
+
+        # We're going to need a sequence of all of the pairs of particles when
+        # we are detecting collisions. combinations generates pairs of indexes
+        # into the self.particles list of Particles on the fly.
+        pairs = combinations([agent, *other_agents], 2)
+        for i,j in pairs:
+            change_velocities(i, j) 
+
+
     #Todo: Not sure this works properly?
     def step(self, agent: agent.Agent) -> None:
         """
@@ -56,11 +90,11 @@ class RandMov(Behaviour):
         """
 
         move_vector = random.sample([-0.05, 0, 0.05], 2)
-        agent.v =elem_add(move_vector, agent.v)
-        agent.pos = elem_add(agent.v, agent.pos)
-        if shared_pos := [x for x in agent.model.agents if x != agent and helper.distance(agent, x) < agent.radius]:
-            helper.collide(agent, shared_pos, len(shared_pos)+1)
-            agent.pos = elem_add(agent.v, agent.pos)
+        agent.v =helper.elem_add(move_vector, agent.v)
+        agent.pos = helper.elem_add(agent.v, agent.pos)
+        if shared_pos := [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) < agent.radius]:
+            self.collide(agent, shared_pos)
+            agent.pos = helper.elem_add(agent.v, agent.pos)
 
         self.in_bounds(agent)
 
@@ -75,15 +109,43 @@ class Adhesion(Behaviour):
     """
 
     def __init__(self) -> None:
-        self.strength = random.randint(1, 10)
+        self.strength = 10
+
+
+    @staticmethod
+    def attract(agent: agent.Agent, other_agents: List[agent.Agent]) -> None:
+        """
+            Other agents in a close radius to the agent that also have the adhesive behaviour are drawn together
+
+            agent (Agent) : agent that function was called by 
+            other_agents (List) : list of other agents involved in collision
+        """
+
+        # Not totally working need them to not go inside one another, something to do with the if statment
+        def change_velocities(p1, p2):
+            distance_vector = np.array(p1.pos) - np.array(p2.pos)
+            move_vector = 0.1 * distance_vector
+            p1.pos = helper.elem_add(p1.pos, -move_vector)
+            p2.pos = helper.elem_add(p2.pos, move_vector)
+            if (dist := helper.distance(p1, p2)) < (p1.radius + p2.radius):
+                p1.pos = helper.elem_add(p1.pos, [0.5 * (p2.radius - dist) * np.sign(dist)] * 2)
+                p2.pos = helper.elem_add(p2.pos, [0.5 * (p1.radius - dist) * -np.sign(dist)] * 2)
+
+        pairs = combinations([agent, *other_agents], 2)
+        for i, j in pairs:
+            change_velocities(i, j)
 
 
     def step(self, agent: agent.Agent) -> None:
         """
             Checks if near agents have this behviour:
                 -> If so, move closer to this agent (based on strength)
-                -> Cohesive agents become a single agent
-                -> Garbage keeping over individual agents that are now cohesive
+                -> Don't get stuck inside other agent
         """
-        pass
+        if close_others := [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) < self.strength and self in x.behaviours]:
+            self.attract(agent, close_others) 
+
+
+
+
 
