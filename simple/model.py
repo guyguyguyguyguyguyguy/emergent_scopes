@@ -32,9 +32,10 @@ class Model:
         self.width = width
         self.height = height
         self.scheduler = scheduler
-        self.behaviours = [composition_behaviours.RandMov(), composition_behaviours.Adhesion()]
+        # self.behaviours = [composition_behaviours.RandMov(), composition_behaviours.Adhesion()]
+        self.behaviours = [composition_behaviours.Adhesion()]
         self.num_agents = num_agents
-        self.agents = [agent.Agent(random.sample(self.behaviours, k= random.randint(2, len(self.behaviours))), model=self) for x in range(num_agents)]
+        self.agents = [agent.Agent(random.sample(self.behaviours, k= random.randint(1, len(self.behaviours))), model=self) for x in range(num_agents)]
         
 
     def run(self) -> None:

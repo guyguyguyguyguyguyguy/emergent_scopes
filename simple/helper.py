@@ -14,8 +14,8 @@ elem_add = lambda x, y: list(map(add, x, y))
 
 
 def distance(agent1: agent.Agent, agent2: agent.Agent) -> float:
-    return np.linalg.norm(np.array(agent1.pos) - np.array(agent2.pos))
-    
+    dist = np.linalg.norm(np.array(agent1.pos) - np.array(agent2.pos))
+    return dist
 
 
 

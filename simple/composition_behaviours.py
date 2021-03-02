@@ -9,6 +9,24 @@ import helper
 import agent 
 
 
+def in_bounds(agent: agent.Agent) -> None:
+    """
+        Keep agent in boundaries of canvas
+    """
+    if agent.pos[0] - agent.radius < 0:
+        agent.pos[0] = agent.radius
+        agent.v[0] = -agent.v[0]
+    if agent.pos[0] + agent.radius > agent.model.width:
+        agent.pos[0] = agent.model.width-agent.radius
+        agent.v[0] = -agent.v[0]
+    if agent.pos[1] - agent.radius < 0:
+        agent.pos[1] = agent.radius
+        agent.v[1] = -agent.v[1]
+    if agent.pos[1] + agent.radius > agent.model.height:
+        agent.pos[1] = agent.model.height-agent.radius
+        agent.v[1] = -agent.v[1]
+
+
 class Behaviour(ABC):
 
     @abstractmethod
@@ -26,24 +44,6 @@ class RandMov(Behaviour):
 
     def __init__(self) -> None:
         self.step_size = random.randint(1, 10)
-
-
-    def in_bounds(self, agent: agent.Agent) -> None:
-        """
-            Keep agent in boundaries of canvas
-        """
-        if agent.pos[0] - agent.radius < 0:
-            agent.pos[0] = agent.radius
-            agent.v[0] = -agent.v[0]
-        if agent.pos[0] + agent.radius > agent.model.width:
-            agent.pos[0] = agent.model.width-agent.radius
-            agent.v[0] = -agent.v[0]
-        if agent.pos[1] - agent.radius < 0:
-            agent.pos[1] = agent.radius
-            agent.v[1] = -agent.v[1]
-        if agent.pos[1] + agent.radius > agent.model.height:
-            agent.pos[1] = agent.model.height-agent.radius
-            agent.v[1] = -agent.v[1]
 
 
     @staticmethod
@@ -96,7 +96,7 @@ class RandMov(Behaviour):
             self.collide(agent, shared_pos)
             agent.pos = helper.elem_add(agent.v, agent.pos)
 
-        self.in_bounds(agent)
+        in_bounds(agent)
 
 
 class Adhesion(Behaviour):
@@ -109,7 +109,7 @@ class Adhesion(Behaviour):
     """
 
     def __init__(self) -> None:
-        self.strength = 10
+        self.strength = 25
 
 
     @staticmethod
@@ -127,9 +127,16 @@ class Adhesion(Behaviour):
             move_vector = 0.1 * distance_vector
             p1.pos = helper.elem_add(p1.pos, -move_vector)
             p2.pos = helper.elem_add(p2.pos, move_vector)
-            if (dist := helper.distance(p1, p2)) < (p1.radius + p2.radius):
-                p1.pos = helper.elem_add(p1.pos, [0.5 * (p2.radius - dist) * np.sign(dist)] * 2)
-                p2.pos = helper.elem_add(p2.pos, [0.5 * (p1.radius - dist) * -np.sign(dist)] * 2)
+            if (dist := helper.distance(p1, p2)) <= (p1.radius + p2.radius):
+                x_ratio = distance_vector[0]/dist
+                p1_dist = dist - p2.radius
+                p2_dist = dist - p1.radius
+                
+                p1_move_vec = [p1_dist * x_ratio, p1_dist * (1-x_ratio)]
+                p2_move_vec = [p2_dist * x_ratio, p2_dist * (1-x_ratio)]
+
+                p1.pos = helper.elem_add(p1.pos, p1_move_vec)
+                p2.pos = helper.elem_add(p2.pos, p2_move_vec)
 
         pairs = combinations([agent, *other_agents], 2)
         for i, j in pairs:
@@ -145,6 +152,7 @@ class Adhesion(Behaviour):
         if close_others := [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) < self.strength and self in x.behaviours]:
             self.attract(agent, close_others) 
 
+        in_bounds(agent)
 
 
 
