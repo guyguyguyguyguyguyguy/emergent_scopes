@@ -4,7 +4,7 @@ import pygame
 import random
 import agent
 import composition_behaviours 
-#from helper import agent_step
+import testing_funcs
 from typing import TypeVar, Type, List
 import schedulers
 
@@ -40,6 +40,8 @@ class Model:
 
     def run(self) -> None:
         done = False
+        dragging = False
+        new_agent = None
         pygame.init()
         self.screen = pygame.display.set_mode([self.width, self.height])
         clock = pygame.time.Clock()
@@ -53,6 +55,9 @@ class Model:
                         done = True
                     if event.key == pygame.K_r:
                         self.agents = [agent.Agent(self.behaviours, model=self) for x in range(self.num_agents)]
+                
+                dragging, new_agent = testing_funcs.move_adhesion_agent_on_mouse_down(event, self, dragging, new_agent)
+
             self.screen.fill((0, 0, 0))
             for a in self.agents:
                 pygame.draw.circle(self.screen, (255, 255, 255), a.pos, a.radius)

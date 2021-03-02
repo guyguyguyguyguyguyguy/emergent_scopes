@@ -6,7 +6,7 @@ from composition_behaviours import Behaviour
 from collections.abc import Sequence, Iterable
 from dataclasses import dataclass
 
-
+# Not using this but good for learning
 @dataclass
 class Pos:
     x: float
@@ -44,7 +44,7 @@ class Agent:
 
     """Docstring for Agent. """
 
-    def __init__(self, behaviours: Iterable[Behaviour], model: model.Model) -> None:
+    def __init__(self, behaviours: Iterable[Behaviour], model: model.Model, pos: List[float] = None) -> None:
         """.
             Initalise Agent class with n number of composite behaviours.
 
@@ -56,7 +56,10 @@ class Agent:
         self.v = [0, 0]
         self.behaviours = behaviours
         self.model = model
-        self.pos = [ random.choice(range(model.width)), random.choice(range(model.height)) ]
+        if not pos:
+            self.pos = [ random.choice(range(model.width)), random.choice(range(model.height)) ]
+        else:
+            self.pos = pos
 
 
     def __eq__(self, o: Agent) -> bool:

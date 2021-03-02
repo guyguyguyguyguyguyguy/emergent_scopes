@@ -123,20 +123,20 @@ class Adhesion(Behaviour):
 
         # Not totally working need them to not go inside one another, something to do with the if statment
         def change_velocities(p1, p2):
+            print("got this far")
             distance_vector = np.array(p1.pos) - np.array(p2.pos)
             move_vector = 0.1 * distance_vector
             p1.pos = helper.elem_add(p1.pos, -move_vector)
             p2.pos = helper.elem_add(p2.pos, move_vector)
             if (dist := helper.distance(p1, p2)) <= (p1.radius + p2.radius):
-                x_ratio = distance_vector[0]/dist
-                p1_dist = dist - p2.radius
-                p2_dist = dist - p1.radius
-                
-                p1_move_vec = [p1_dist * x_ratio, p1_dist * (1-x_ratio)]
-                p2_move_vec = [p2_dist * x_ratio, p2_dist * (1-x_ratio)]
+                print("It is happening")
+                overlap = dist - (p1.radius + p2.radius)
+                half_over = 0.5 * overlap
+                p1.pos[0] -= half_over * (p1.pos[0] - p2.pos[0]) / dist
+                p1.pos[1] -= half_over * (p1.pos[1] - p2.pos[1]) /dist
+                p2.pos[0] += half_over * (p1.pos[0] - p2.pos[0]) / dist
+                p2.pos[1] += half_over * (p1.pos[1] - p2.pos[1]) /dist
 
-                p1.pos = helper.elem_add(p1.pos, p1_move_vec)
-                p2.pos = helper.elem_add(p2.pos, p2_move_vec)
 
         pairs = combinations([agent, *other_agents], 2)
         for i, j in pairs:
@@ -150,6 +150,7 @@ class Adhesion(Behaviour):
                 -> Don't get stuck inside other agent
         """
         if close_others := [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) < self.strength and self in x.behaviours]:
+            print("others")
             self.attract(agent, close_others) 
 
         in_bounds(agent)
