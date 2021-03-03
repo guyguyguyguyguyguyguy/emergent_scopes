@@ -3,7 +3,7 @@ from model import Model
 
 WIDTH: Final = 500
 HEIGHT: Final = 500
-AGENTS: Final = 0
+AGENTS: Final = 30
 
 def run():
 

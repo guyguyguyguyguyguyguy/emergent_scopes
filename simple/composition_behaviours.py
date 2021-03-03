@@ -109,7 +109,7 @@ class Adhesion(Behaviour):
     """
 
     def __init__(self) -> None:
-        self.strength = 25
+        self.strength = random.randint(8, 12)
 
 
     @staticmethod
@@ -123,13 +123,11 @@ class Adhesion(Behaviour):
 
         # Not totally working need them to not go inside one another, something to do with the if statment
         def change_velocities(p1, p2):
-            print("got this far")
             distance_vector = np.array(p1.pos) - np.array(p2.pos)
             move_vector = 0.1 * distance_vector
             p1.pos = helper.elem_add(p1.pos, -move_vector)
             p2.pos = helper.elem_add(p2.pos, move_vector)
             if (dist := helper.distance(p1, p2)) <= (p1.radius + p2.radius):
-                print("It is happening")
                 overlap = dist - (p1.radius + p2.radius)
                 half_over = 0.5 * overlap
                 p1.pos[0] -= half_over * (p1.pos[0] - p2.pos[0]) / dist
@@ -149,13 +147,19 @@ class Adhesion(Behaviour):
                 -> If so, move closer to this agent (based on strength)
                 -> Don't get stuck inside other agent
         """
-        [ print(helper.distance(agent, x)) for x in agent.model.agents]
-        if close_others := [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) < self.strength and self in x.behaviours]:
-            print("others")
-            self.attract(agent, close_others) 
 
+        self.attract(agent, self.attracting_neighbours(agent)) 
         in_bounds(agent)
 
-
-
+    
+    def attracting_neighbours(self, agent: agent.Agent, force: str = "radius") -> List[agent.Agent]:
+        attractors = []
+        if len(agents := agent.model.agents) > 1:
+            for a in [other for other in agents if agent is not other]:
+                distance = self.strength if force == "strength" else agent.radius + a.radius + 2
+                if helper.distance(agent, a) <= distance:
+                    if [isinstance(b, type(self)) for b in a.behaviours]:
+                        attractors.append(a)
+        
+        return attractors 
 

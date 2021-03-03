@@ -32,11 +32,22 @@ class Model:
         self.width = width
         self.height = height
         self.scheduler = scheduler
-        # self.behaviours = [composition_behaviours.RandMov(), composition_behaviours.Adhesion()]
-        self.behaviours = [composition_behaviours.Adhesion()]
+        self.behaviours = [composition_behaviours.RandMov, composition_behaviours.Adhesion]
+        # self.behaviours = [composition_behaviours.Adhesion]
         self.num_agents = num_agents
-        self.agents = [agent.Agent(random.sample(self.behaviours, k= random.randint(1, len(self.behaviours))), model=self) for x in range(num_agents)]
-        
+        self.agents = [agent.Agent(self.assign_behaviours(), model=self) for x in range(num_agents)]
+    
+
+    # Way to get unique instantiation of composition behaviours in each agent
+    # Must be a better way to do this
+    def assign_behaviours(self) -> List[composition_behaviours.Behaviour]:
+        give_behaviours = random.sample(self.behaviours, k=random.randint(1, len(self.behaviours)))
+        instant_behaviours = []
+        for x in give_behaviours:
+            instant_behaviours.append(x())
+
+        return instant_behaviours
+
 
     def run(self) -> None:
         done = False
@@ -54,7 +65,7 @@ class Model:
                     if event.key == pygame.K_q:
                         done = True
                     if event.key == pygame.K_r:
-                        self.agents = [agent.Agent(self.behaviours, model=self) for x in range(self.num_agents)]
+                        self.agents = [agent.Agent(self.assign_behaviours(), model=self) for x in range(self.num_agents)]
                 
                 dragging, new_agent = testing_funcs.move_adhesion_agent_on_mouse_down(event, self, dragging, new_agent)
 
