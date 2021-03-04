@@ -173,31 +173,32 @@ class Adhesion(Behaviour):
     #   -> Possibly want to add some sort of polarity to the agent such that can only be attracted on certain side
     #   -> Thinking of lipposaccharides forming a single-layer membrane
     # Repuled by other attracted agent by distance of agent radius (should attract it to other side)
+    # Todo: NEEDS WERK!
     def attraction_constraints(self, agent: agent.Agent) -> None:
         bound_others = [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) <= (x.radius + agent.radius + self.strength)] 
         for x, y in combinations(bound_others, 2):
             if helper.distance(x, y) < (agent.radius*2 + x.radius + y.radius):
-                # Currently they are moving away but not around the agent, seem to see a larger radius than is true
                 third_point = helper.elem_add(agent.pos, [0, agent.radius])
                 x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
                 y_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(y.pos), np.array(third_point))
 
-                x_move_vec = agent.radius * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
-                y_move_vec = agent.radius * np.array([np.sin(y_angle + 0.05), np.cos(y_angle + 0.05)])
+                x_move_vec = agent.pos + agent.radius * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
+                y_move_vec = agent.pos - agent.radius * np.array([np.sin(y_angle + 0.05), np.cos(y_angle + 0.05)])
                 # Need to find a way to choose which agent moves in which way
-                x.pos = helper.elem_add(x.pos, -x_move_vec)
-                y.pos = helper.elem_add(y.pos, y_move_vec)
+                x.pos = x_move_vec
+                y.pos = y_move_vec
 
 
+    # For tests
     def circulate(self, agent: agent.Agent) -> None:
         bound_others = [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) <= (x.radius + agent.radius + self.strength)] 
         for x in bound_others:
             third_point = helper.elem_add(agent.pos, [0, agent.radius])
-            # Angle is correct but the movement is still off
+            # Angle is correct but the movement is still off -> Porque?!
             x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
 
-            x_move_vec = (agent.radius + x.radius) * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
-            x.pos = helper.elem_add(x.pos, x_move_vec)
+            x_move_vec = agent.pos + agent.radius * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
+            x.pos = x_move_vec
 
 
     def step(self, agent: agent.Agent) -> None:
@@ -207,9 +208,9 @@ class Adhesion(Behaviour):
                 -> Don't get stuck inside other agent
         """
 
-        # self.attract(agent, self.attracting_neighbours(agent)) 
-        # self.attraction_constraints(agent)
-        self.circulate(agent)
+        self.attract(agent, self.attracting_neighbours(agent)) 
+        self.attraction_constraints(agent)
+        # self.circulate(agent)
         in_bounds(agent)
 
     
