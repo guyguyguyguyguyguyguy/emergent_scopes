@@ -44,7 +44,7 @@ class Agent:
 
     """Docstring for Agent. """
 
-    def __init__(self, behaviours: Iterable[Behaviour], model: model.Model, pos: List[float] = None) -> None:
+    def __init__(self, behaviours: Iterable[Behaviour], model: model.Model, pos: List[float] = None, radius: int = None) -> None:
         """.
             Initalise Agent class with n number of composite behaviours.
 
@@ -52,14 +52,11 @@ class Agent:
                 *behaviours (list) : Defines all behaviours recieved by Agent.
         """
 
-        self.radius = random.randint(1, 5)
+        self.radius = random.randint(1, 5) if not radius else radius
         self.v = [0, 0]
         self.behaviours = behaviours
         self.model = model
-        if not pos:
-            self.pos = [ random.choice(range(model.width)), random.choice(range(model.height)) ]
-        else:
-            self.pos = pos
+        self.pos = [ random.choice(range(model.width)), random.choice(range(model.height)) ] if not pos else pos
 
 
     def __eq__(self, o: Agent) -> bool:

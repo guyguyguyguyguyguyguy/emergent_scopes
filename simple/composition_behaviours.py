@@ -65,7 +65,7 @@ class RandMov(Behaviour):
 
             """
 
-            m1, m2 = np.array(p1.radius**2), np.array(p2.radius**2)
+            m1, m2 = p1.radius**2, p2.radius**2
             M = m1 + m2
             r1, r2 = np.array(p1.pos), np.array(p2.pos)
             d = np.linalg.norm(r1 - r2)**2
@@ -75,12 +75,26 @@ class RandMov(Behaviour):
             p1.v = u1
             p2.v = u2
 
+        
+        # For some reason it doesnt really work and its so sad, but other one seems to work
+        def change_velocities_2(p1, p2) -> None:
+            dist = helper.distance(p1, p2)
+            distance_vec = np.array(p1.pos) - np.array(p2.pos)
+            norm = distance_vec/(dist)
+            
+            k = np.array(p1.v) - np.array(p2.v)
+            p = 2 * (norm * k) / (p1.radius + p2.radius)
+            p1.v = np.array(p1.v) + p * p2.radius * norm * 0.1
+            p2.v = np.array(p2.v) - p * p1.radius * norm * 0.1
+
+
         # We're going to need a sequence of all of the pairs of particles when
         # we are detecting collisions. combinations generates pairs of indexes
         # into the self.particles list of Particles on the fly.
         pairs = combinations([agent, *other_agents], 2)
         for i,j in pairs:
             change_velocities(i, j) 
+            # change_velocities_2(i, j)
 
 
     #Todo: Not sure this works properly?
@@ -89,8 +103,10 @@ class RandMov(Behaviour):
             Move agent that this instance belong to by a random vector, scaled by step size
         """
 
-        move_vector = random.sample([-0.05, 0, 0.05], 2)
-        agent.v =helper.elem_add(move_vector, agent.v)
+        move_vector = np.array(random.sample([-0.05, 0, 0.05], 2))
+        # Idea to scale velocity by agent 'weight' (radius)
+        scaled_vel = move_vector * (1/agent.radius)
+        agent.v =helper.elem_add(scaled_vel, agent.v)
         agent.pos = helper.elem_add(agent.v, agent.pos)
         if shared_pos := [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) < agent.radius]:
             self.collide(agent, shared_pos)
@@ -109,7 +125,7 @@ class Adhesion(Behaviour):
     """
 
     def __init__(self) -> None:
-        self.strength = random.randint(8, 12)
+        self.strength = random.randint(2, 7)
 
 
     @staticmethod
@@ -141,6 +157,49 @@ class Adhesion(Behaviour):
             change_velocities(i, j)
 
 
+    def attracting_neighbours(self, agent: agent.Agent) -> List[agent.Agent]:
+        attractors = []
+        if len(agents := agent.model.agents) > 1:
+            for a in [other for other in agents if agent is not other]:
+                distance = self.strength + agent.radius + a.radius 
+                if helper.distance(agent, a) <= distance:
+                    if any([isinstance(b, type(self)) for b in a.behaviours]):
+                        attractors.append(a)
+        
+        return attractors 
+
+
+    # Function to ensure only n number of agents are attracted to each agent
+    #   -> Possibly want to add some sort of polarity to the agent such that can only be attracted on certain side
+    #   -> Thinking of lipposaccharides forming a single-layer membrane
+    # Repuled by other attracted agent by distance of agent radius (should attract it to other side)
+    def attraction_constraints(self, agent: agent.Agent) -> None:
+        bound_others = [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) <= (x.radius + agent.radius + self.strength)] 
+        for x, y in combinations(bound_others, 2):
+            if helper.distance(x, y) < (agent.radius*2 + x.radius + y.radius):
+                # Currently they are moving away but not around the agent, seem to see a larger radius than is true
+                third_point = helper.elem_add(agent.pos, [0, agent.radius])
+                x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
+                y_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(y.pos), np.array(third_point))
+
+                x_move_vec = agent.radius * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
+                y_move_vec = agent.radius * np.array([np.sin(y_angle + 0.05), np.cos(y_angle + 0.05)])
+                # Need to find a way to choose which agent moves in which way
+                x.pos = helper.elem_add(x.pos, -x_move_vec)
+                y.pos = helper.elem_add(y.pos, y_move_vec)
+
+
+    def circulate(self, agent: agent.Agent) -> None:
+        bound_others = [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) <= (x.radius + agent.radius + self.strength)] 
+        for x in bound_others:
+            third_point = helper.elem_add(agent.pos, [0, agent.radius])
+            # Angle is correct but the movement is still off
+            x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
+
+            x_move_vec = (agent.radius + x.radius) * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
+            x.pos = helper.elem_add(x.pos, x_move_vec)
+
+
     def step(self, agent: agent.Agent) -> None:
         """
             Checks if near agents have this behviour:
@@ -148,18 +207,9 @@ class Adhesion(Behaviour):
                 -> Don't get stuck inside other agent
         """
 
-        self.attract(agent, self.attracting_neighbours(agent)) 
+        # self.attract(agent, self.attracting_neighbours(agent)) 
+        # self.attraction_constraints(agent)
+        self.circulate(agent)
         in_bounds(agent)
 
     
-    def attracting_neighbours(self, agent: agent.Agent, force: str = "radius") -> List[agent.Agent]:
-        attractors = []
-        if len(agents := agent.model.agents) > 1:
-            for a in [other for other in agents if agent is not other]:
-                distance = self.strength if force == "strength" else agent.radius + a.radius + 2
-                if helper.distance(agent, a) <= distance:
-                    if [isinstance(b, type(self)) for b in a.behaviours]:
-                        attractors.append(a)
-        
-        return attractors 
-
