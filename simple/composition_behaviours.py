@@ -183,7 +183,7 @@ class Adhesion(Behaviour):
                 y_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(y.pos), np.array(third_point))
 
                 x_move_vec = agent.pos + agent.radius * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
-                y_move_vec = agent.pos - agent.radius * np.array([np.sin(y_angle + 0.05), np.cos(y_angle + 0.05)])
+                y_move_vec = agent.pos + agent.radius * np.array([np.sin(y_angle + 0.05), np.cos(y_angle + 0.05)])
                 # Need to find a way to choose which agent moves in which way
                 x.pos = x_move_vec
                 y.pos = y_move_vec
@@ -196,6 +196,7 @@ class Adhesion(Behaviour):
             third_point = helper.elem_add(agent.pos, [0, agent.radius])
             # Angle is correct but the movement is still off -> Porque?!
             x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
+            print(x_angle)
 
             x_move_vec = agent.pos + agent.radius * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
             x.pos = x_move_vec
@@ -206,11 +207,12 @@ class Adhesion(Behaviour):
             Checks if near agents have this behviour:
                 -> If so, move closer to this agent (based on strength)
                 -> Don't get stuck inside other agent
+                -> If another agent is already attracted, be reuplsed to other side 
         """
 
-        self.attract(agent, self.attracting_neighbours(agent)) 
-        self.attraction_constraints(agent)
-        # self.circulate(agent)
+        # self.attract(agent, self.attracting_neighbours(agent)) 
+        # self.attraction_constraints(agent)
+        self.circulate(agent)
         in_bounds(agent)
 
     

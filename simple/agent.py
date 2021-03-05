@@ -42,14 +42,19 @@ class Pos:
 
 class Agent:
 
-    """Docstring for Agent. """
+    """
+        Carrier class for composition behaviours:
+    """
 
     def __init__(self, behaviours: Iterable[Behaviour], model: model.Model, pos: List[float] = None, radius: int = None) -> None:
         """.
             Initalise Agent class with n number of composite behaviours.
 
             Parameters:
-                *behaviours (list) : Defines all behaviours recieved by Agent.
+                behaviours (list) : Defines all behaviours recieved by Agent.
+                radius (int) : radius and weight of the agent. Used in collisions for RandMov behaviour and as radius in visalisation
+                v (list[float]) : velocity of agent in x and y axes, initalised as 0
+                pos (list[float]) : inital position of the agent
         """
 
         self.radius = random.randint(1, 5) if not radius else radius

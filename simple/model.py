@@ -1,4 +1,5 @@
 from __future__ import annotations
+import sys
 import numpy as np
 import pygame
 import random
@@ -19,7 +20,7 @@ class Model:
         Model for simulating emergence at multiple scales
     """
 
-    def __init__(self, width: int = 50, height: int = 50, num_agents: int = 20, scheduler: Type[schedulers.Scheduler] = schedulers.Asynchronous) -> None:
+    def __init__(self, width: int = 50, height: int = 50, num_agents: int = 20, scheduler: Type[schedulers.Scheduler] = schedulers.Asynchronous, test: bool = False) -> None:
         """
             Initalise model
 
@@ -37,6 +38,7 @@ class Model:
         self.behaviours = [composition_behaviours.RandMov]
         self.num_agents = num_agents
         self.agents = [agent.Agent(self.assign_behaviours(), model=self) for x in range(num_agents)]
+        self.test = test
     
 
     # Way to get unique instantiation of composition behaviours in each agent
@@ -63,18 +65,25 @@ class Model:
                 if event.type == pygame.QUIT:
                     done = True
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        done = True
-                    if event.key == pygame.K_r:
+                    if event.key == pygame.K_SPACE:
+                        if self.test:
+                            self.tick()
+                    elif event.key == pygame.K_r:
                         self.agents = [agent.Agent(self.assign_behaviours(), model=self) for x in range(self.num_agents)]
+                    elif event.key == pygame.K_q or pygame.K_ESCAPE:
+                        done = True
+                        pygame.quit()
+                        sys.exit()
                 
                 dragging, new_agent = testing_funcs.move_adhesion_agent_on_mouse_down(event, self, dragging, new_agent)
 
             self.screen.fill((0, 0, 0))
             for a in self.agents:
                 pygame.draw.circle(self.screen, (255, 255, 255), a.pos, a.radius)
-
-            self.tick()
+                
+            if not self.test:
+                self.tick()
+            
             clock.tick(60)
             pygame.display.flip()
 
