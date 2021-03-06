@@ -8,7 +8,9 @@ from collections.abc import Sequence, Iterable
 
 class Agent():
 
-    """Docstring for Agent. """
+    """ 
+        ->
+    """
 
     def __init__(self, behaviours: Iterable[Behaviour], model: Model) -> None:
         """.
