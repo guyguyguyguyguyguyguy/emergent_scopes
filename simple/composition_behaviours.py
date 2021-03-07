@@ -144,12 +144,11 @@ class Adhesion(Behaviour):
             p1.pos = helper.elem_add(p1.pos, -move_vector)
             p2.pos = helper.elem_add(p2.pos, move_vector)
             if (dist := helper.distance(p1, p2)) <= (p1.radius + p2.radius):
-                overlap = dist - (p1.radius + p2.radius)
-                half_over = 0.5 * overlap
-                p1.pos[0] -= half_over * (p1.pos[0] - p2.pos[0]) / dist
-                p1.pos[1] -= half_over * (p1.pos[1] - p2.pos[1]) /dist
-                p2.pos[0] += half_over * (p1.pos[0] - p2.pos[0]) / dist
-                p2.pos[1] += half_over * (p1.pos[1] - p2.pos[1]) /dist
+                overlap = 0.5 * (dist - p1.radius - p2.radius)
+                p1.pos[0] -= overlap * (p1.pos[0] - p2.pos[0]) / dist
+                p1.pos[1] -= overlap * (p1.pos[1] - p2.pos[1]) /dist
+                p2.pos[0] += overlap * (p1.pos[0] - p2.pos[0]) / dist
+                p2.pos[1] += overlap * (p1.pos[1] - p2.pos[1]) /dist
 
 
         pairs = combinations([agent, *other_agents], 2)
@@ -210,7 +209,7 @@ class Adhesion(Behaviour):
                 -> If another agent is already attracted, be reuplsed to other side 
         """
 
-        # self.attract(agent, self.attracting_neighbours(agent)) 
+        self.attract(agent, self.attracting_neighbours(agent)) 
         # self.attraction_constraints(agent)
         self.circulate(agent)
         in_bounds(agent)

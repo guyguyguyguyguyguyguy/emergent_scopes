@@ -70,9 +70,9 @@ class Model:
                             self.tick()
                     elif event.key == pygame.K_r:
                         self.agents = [agent.Agent(self.assign_behaviours(), model=self) for x in range(self.num_agents)]
-                    elif event.key == pygame.K_q or pygame.K_ESCAPE:
+                    elif event.key in [pygame.K_q, pygame.K_ESCAPE]:
                         done = True
-                
+
                 dragging, new_agent = testing_funcs.move_adhesion_agent_on_mouse_down(event, self, dragging, new_agent)
 
             self.screen.fill((0, 0, 0))

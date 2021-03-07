@@ -2,13 +2,18 @@ from typing import Final
 from model import Model
 import sys
 
-WIDTH: Final = 500
-HEIGHT: Final = 500
+WIDTH: Final = 1000
+HEIGHT: Final = 700
 AGENTS: Final = 0
-if sys.argv[1] == 'True':
-    TEST: Final = True
-else:
-    TEST: Final = False
+
+try:
+    if sys.argv[1] == 'True':
+        TEST = True
+    else:
+        TEST = False
+except:
+    TEST = True
+
 print(Final)
 
 def run():
