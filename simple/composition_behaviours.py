@@ -30,7 +30,7 @@ def in_bounds(agent: agent.Agent) -> None:
 class Behaviour(ABC):
 
     @abstractmethod
-    def step(selft, agent) -> None:
+    def step(self, agent) -> None:
         pass
 
 
@@ -106,11 +106,11 @@ class RandMov(Behaviour):
         move_vector = np.array(random.sample([-0.5, 0, 0.5], 2))
         # Idea to scale velocity by agent 'weight' (radius)
         scaled_vel = move_vector * (1/agent.radius)
-        agent.v =helper.elem_add(scaled_vel, agent.v)
-        agent.pos = helper.elem_add(agent.v, agent.pos)
+        agent.v = scaled_vel + agent.v
+        agent.pos = agent.v + agent.pos
         if shared_pos := [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) < agent.radius]:
             self.collide(agent, shared_pos)
-            agent.pos = helper.elem_add(agent.v, agent.pos)
+            agent.pos = agent.v + agent.pos
 
         in_bounds(agent)
 
@@ -125,7 +125,7 @@ class Adhesion(Behaviour):
     """
 
     def __init__(self) -> None:
-        self.strength = random.randint(2, 7)
+        self.strength = random.randint(1, 4)
 
 
     @staticmethod
@@ -142,8 +142,8 @@ class Adhesion(Behaviour):
         def change_velocities(p1, p2):
             distance_vector = np.array(p1.pos) - np.array(p2.pos)
             move_vector = 0.1 * distance_vector
-            p1.pos = helper.elem_add(p1.pos, -move_vector)
-            p2.pos = helper.elem_add(p2.pos, move_vector)
+            p1.pos = p1.pos - move_vector
+            p2.pos = p2.pos + move_vector
             if (dist := helper.distance(p1, p2)) <= (p1.radius + p2.radius):
                 overlap = 0.5 * (dist - p1.radius - p2.radius)
                 p1.pos[0] -= overlap * (p1.pos[0] - p2.pos[0]) / dist
@@ -175,18 +175,29 @@ class Adhesion(Behaviour):
     # Repuled by other attracted agent by distance of agent radius (should attract it to other side)
     # Todo: NEEDS WERK!
     def attraction_constraints(self, agent: agent.Agent) -> None:
-        bound_others = [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) <= (x.radius + agent.radius + self.strength)] 
-        for x, y in combinations(bound_others, 2):
-            if helper.distance(x, y) < (agent.radius*2 + x.radius + y.radius):
-                third_point = helper.elem_add(agent.pos, [0, agent.radius])
+        bound_others = [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) <= (x.radius + agent.radius + self.strength) and any([isinstance(b, type(self)) for b in x.behaviours])] 
+        # Kinda works, for now
+        while len(bound_others) > 2:
+            repelled_agent = bound_others.pop()
+            move_vec = -repelled_agent.v
+            repelled_agent.pos += move_vec
+
+        # If distance is less than diameter of agent and radius of x, y then we want them to move away from each other
+        # Works but attraction ruins things
+        try:
+            x, y = bound_others
+            if helper.distance(x, y) < (agent.radius*2 + x.radius + y.radius - 5):
+                third_point = agent.pos + np.array([0, agent.radius])
                 x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
                 y_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(y.pos), np.array(third_point))
 
-                x_move_vec = helper.elem_add(x.pos, np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))]))
-                y_move_vec = helper.elem_add(y.pos, np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))]))
-                # Need to find a way to choose which agent moves in which way
+                # Now they all circulate, but need to make them repel each other such that only two can be bound
+                x_move_vec = x.pos + np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))])
+                y_move_vec = y.pos + -np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))])
                 x.pos = x_move_vec
                 y.pos = y_move_vec
+        except:
+            return
 
 
     # For tests
@@ -194,9 +205,9 @@ class Adhesion(Behaviour):
     def circulate(self, agent: agent.Agent) -> None:
         bound_others = [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) <= (x.radius + agent.radius + self.strength)] 
         for x in bound_others:
-            third_point = helper.elem_add(agent.pos, [0, agent.radius])
+            third_point = agent.pos + np.array([0, agent.radius])
             x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
-            x_move_vec = helper.elem_add(x.pos, np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))]))
+            x_move_vec = x.pos + np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))])
             x.pos = x_move_vec
 
 
@@ -210,7 +221,45 @@ class Adhesion(Behaviour):
 
         self.attract(agent, self.attracting_neighbours(agent)) 
         # self.attraction_constraints(agent)
-        self.circulate(agent)
+        # self.circulate(agent)
         in_bounds(agent)
 
     
+class Linking(Behaviour):
+    """
+        Linking class to make 'membranes'
+    """
+    def __init__(self) -> None:
+        self.left = False
+        self.right = False
+
+
+    @staticmethod
+    def left_link(agent: agent.Agent) -> np.ndarray:
+        return agent.pos + np.array([agent.radius, 0])
+
+
+    @staticmethod
+    def right_link(agent: agent.Agent) -> np.ndarray:
+        return agent.pos - np.array([agent.radius, 0])
+
+    def link(self, agent: agent.Agent) -> None:
+        if not self.right and (linking_neighs := [x for x in agent.model.agents if helper.distance_pos(x.pos, right_link := self.right_link(agent)) < x.radius]):
+            print('Am here')
+            linking_neigh = linking_neighs.pop()
+            distance_vector = np.array(agent.pos) - np.array(right_link)
+            move_vector = 0.1 * distance_vector
+            agent.pos =  agent.pos - move_vector
+            if (dist := helper.distance(agent, linking_neigh)) <= (agent.radius + linking_neigh.radius):
+                overlap = 0.5 * (dist - agent.radius - linking_neigh.radius)
+                agent.pos[0] -= overlap * (agent.pos[0] - linking_neigh.pos[0]) / dist
+                agent.pos[1] -= overlap * (agent.pos[1] - linking_neigh.pos[1]) /dist
+                linking_neigh.pos[0] += overlap * (agent.pos[0] - linking_neigh.pos[0]) / dist
+                linking_neigh.pos[1] += overlap * (agent.pos[1] - linking_neigh.pos[1]) /dist
+            
+            self.right = True
+
+    
+
+    def step(self, agent: agent.Agent) -> None:
+        self.link(agent)

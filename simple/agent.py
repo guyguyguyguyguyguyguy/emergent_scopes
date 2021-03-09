@@ -1,6 +1,7 @@
 from __future__ import annotations
 import random
 from typing import List
+import numpy as np
 import model
 from composition_behaviours import Behaviour
 from collections.abc import Sequence, Iterable
@@ -46,7 +47,7 @@ class Agent:
         Carrier class for composition behaviours:
     """
 
-    def __init__(self, behaviours: Iterable[Behaviour], model: model.Model, pos: List[float] = None, radius: int = None) -> None:
+    def __init__(self, behaviours: Iterable[Behaviour], model: model.Model, pos: np.ndarray = None, radius: int = None) -> None:
         """.
             Initalise Agent class with n number of composite behaviours.
 
@@ -57,11 +58,11 @@ class Agent:
                 pos (list[float]) : inital position of the agent
         """
 
-        self.radius = random.randint(1, 5) if not radius else radius
-        self.v = [0, 0]
+        self.radius = random.randint(15, 25) if not radius else radius
+        self.v = np.array([0, 0])
         self.behaviours = behaviours
         self.model = model
-        self.pos = [ random.choice(range(model.width)), random.choice(range(model.height)) ] if not pos else pos
+        self.pos = np.array([ random.choice(range(model.width)), random.choice(range(model.height)) ]) if pos is None else pos
 
 
     def __eq__(self, o: Agent) -> bool:

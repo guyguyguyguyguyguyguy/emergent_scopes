@@ -33,9 +33,9 @@ class Model:
         self.width = width
         self.height = height
         self.scheduler = scheduler
-        # self.behaviours = [composition_behaviours.RandMov, composition_behaviours.Adhesion]
+        self.behaviours = [composition_behaviours.RandMov, composition_behaviours.Adhesion]
         # self.behaviours = [composition_behaviours.Adhesion]
-        self.behaviours = [composition_behaviours.RandMov]
+        # self.behaviours = [composition_behaviours.RandMov]
         self.num_agents = num_agents
         self.agents = [agent.Agent(self.assign_behaviours(), model=self) for x in range(num_agents)]
         self.test = test

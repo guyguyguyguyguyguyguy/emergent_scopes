@@ -30,7 +30,9 @@ def distance(agent1: agent.Agent, agent2: agent.Agent) -> float:
     return dist
 
 
-
+def distance_pos(pos1: np.ndarray, pos2: np.ndarray) -> float:
+    dist = np.linalg.norm(np.array(pos1) - np.array(pos2))
+    return dist
 
 
 
