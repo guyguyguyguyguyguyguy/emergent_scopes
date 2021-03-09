@@ -103,7 +103,7 @@ class RandMov(Behaviour):
             Move agent that this instance belong to by a random vector, scaled by step size
         """
 
-        move_vector = np.array(random.sample([-0.05, 0, 0.05], 2))
+        move_vector = np.array(random.sample([-0.5, 0, 0.5], 2))
         # Idea to scale velocity by agent 'weight' (radius)
         scaled_vel = move_vector * (1/agent.radius)
         agent.v =helper.elem_add(scaled_vel, agent.v)
@@ -137,7 +137,8 @@ class Adhesion(Behaviour):
             other_agents (List) : list of other agents involved in collision
         """
 
-        # Not totally working need them to not go inside one another, something to do with the if statment
+        # Works, but not when one agent is placed (found) inside another
+        # Also does not work too well when there are more than 3 balls next to each other
         def change_velocities(p1, p2):
             distance_vector = np.array(p1.pos) - np.array(p2.pos)
             move_vector = 0.1 * distance_vector
@@ -181,23 +182,21 @@ class Adhesion(Behaviour):
                 x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
                 y_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(y.pos), np.array(third_point))
 
-                x_move_vec = agent.pos + agent.radius * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
-                y_move_vec = agent.pos + agent.radius * np.array([np.sin(y_angle + 0.05), np.cos(y_angle + 0.05)])
+                x_move_vec = helper.elem_add(x.pos, np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))]))
+                y_move_vec = helper.elem_add(y.pos, np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))]))
                 # Need to find a way to choose which agent moves in which way
                 x.pos = x_move_vec
                 y.pos = y_move_vec
 
 
     # For tests
+    # Why does this work?
     def circulate(self, agent: agent.Agent) -> None:
         bound_others = [x for x in agent.model.agents if x is not agent and helper.distance(agent, x) <= (x.radius + agent.radius + self.strength)] 
         for x in bound_others:
             third_point = helper.elem_add(agent.pos, [0, agent.radius])
-            # Angle is correct but the movement is still off -> Porque?!
             x_angle = helper.angle_on_cirumfrance(np.array(agent.pos), np.array(x.pos), np.array(third_point))
-            print(x_angle)
-
-            x_move_vec = agent.pos + agent.radius * np.array([np.sin(x_angle + 0.05), np.cos(x_angle + 0.05)])
+            x_move_vec = helper.elem_add(x.pos, np.array([np.sin(x_angle + (np.pi/2)), np.cos(x_angle + (np.pi/2))]))
             x.pos = x_move_vec
 
 

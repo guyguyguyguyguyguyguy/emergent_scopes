@@ -12,13 +12,15 @@ import agent
 # Element-wise list addition 'MACRO'
 elem_add = lambda x, y: list(map(add, x, y))
 
+
 # Find the angle that one agent lies on the other agent
 def angle_on_cirumfrance(a: np.ndarray, b: np.ndarray, c: np.ndarray) -> float:
-    ab = b - a
-    ac = c - a
 
-    cosine_angle = np.dot(ab, ac) / (np.linalg.norm(ab) * np.linalg.norm(ac))
-    angle = np.arccos(cosine_angle)
+    ac = np.arctan2(c[1] - a[1], c[0] - a[0])
+    ab = np.arctan2(b[1] - a[1], b[0] - a[0])
+    angle = ac - ab
+
+    angle = angle - 2*np.pi if angle > np.pi else angle + 2*np.pi
 
     return angle 
 

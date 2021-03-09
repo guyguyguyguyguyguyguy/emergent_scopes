@@ -14,7 +14,6 @@ try:
 except:
     TEST = True
 
-print(Final)
 
 def run():
 

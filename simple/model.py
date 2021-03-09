@@ -55,6 +55,7 @@ class Model:
     def run(self) -> None:
         done = False
         dragging = False
+        ticking = False
         new_agent = None
         pygame.init()
         self.screen = pygame.display.set_mode([self.width, self.height])
@@ -65,15 +66,21 @@ class Model:
                 if event.type == pygame.QUIT:
                     done = True
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
+                    if event.key == pygame.K_n:
                         if self.test:
                             self.tick()
                     elif event.key == pygame.K_r:
                         self.agents = [agent.Agent(self.assign_behaviours(), model=self) for x in range(self.num_agents)]
                     elif event.key in [pygame.K_q, pygame.K_ESCAPE]:
                         done = True
-
+                
                 dragging, new_agent = testing_funcs.move_adhesion_agent_on_mouse_down(event, self, dragging, new_agent)
+               
+            if self.test:
+                keys = pygame.key.get_pressed()
+
+                if keys[pygame.K_SPACE]:
+                    self.tick()
 
             self.screen.fill((0, 0, 0))
             for a in self.agents:

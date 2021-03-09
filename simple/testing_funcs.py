@@ -1,4 +1,5 @@
 from __future__ import annotations
+import random
 import model
 import agent
 from composition_behaviours import Adhesion, RandMov
@@ -11,8 +12,8 @@ def move_adhesion_agent_on_mouse_down(event: pygame.event, model: model.Model, d
     if event.type == pygame.MOUSEBUTTONDOWN:
         if event.button == 1:
             dragging = True  
-            # new_agent = agent.Agent([Adhesion(), RandMov()], model, pos = list(event.pos))
-            new_agent = agent.Agent([Adhesion()], model, pos = list(event.pos), radius= 40)
+            new_agent = agent.Agent([Adhesion(), RandMov()], model, pos = list(event.pos), radius = random.randint(10, 25))
+            # new_agent = agent.Agent([Adhesion()], model, pos = list(event.pos), radius= 40)
             model.agents.append(new_agent)
     elif event.type == pygame.MOUSEBUTTONUP:
         if event.button == 1:
