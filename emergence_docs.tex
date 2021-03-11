@@ -1,0 +1,236 @@
+\documentclass{article}
+
+% Packages
+\usepackage{enumitem}
+\usepackage{verbatim}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{xpatch}
+\usepackage[color=pink!140]{todonotes}
+
+% Commands
+\renewcommand\qedsymbol{$\blacksquare$}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\makeatletter
+\xpatchcmd{\proof}{\@addpunct{.}}{\normalfont\,\@addpunct{:}}{}{}
+\makeatother
+\makeatletter
+\patchcmd{\@verbatim}
+  {\verbatim@font}
+  {\verbatim@font\small}
+  {}{}
+\makeatother
+
+% Title
+\title{Emergence at multiple scopes}
+\author{Guy Frankel}
+\date{}
+
+% Document
+\begin{document}
+\maketitle
+\vspace{-13mm}
+
+\section{Want to replace atom with another word}
+
+
+This report will describe the assumptions and methods which we will use to attempt to model emergence at multiple scopes. Assumptions will first be defined and justified, after-which the methods by which these assumptions will be implemented into an Agent-Based Model (ABM) will be described. Finally, the significance of this work will be laid out.
+
+
+\section{Emergence}
+
+  In the quest to produce emergence at multiple scales, we are in fact attempting to describe the emergence of emergence itself. Therefore, it is imperative to first define what it is meant when we talk of emergence. For our initial investigations we will take a rather basic (and naive) definition of emergence; by which we define it as behaviour/properties, that come to being in a system of agents, that are not found in any of the agents themselves. That is to say, they are properties of a system that can not be predicted from knowledge of the systems fundamental elements.
+
+  [Since systems with emergence are by definition chaotic (and edge of chaos) and deterministic, this lack of prediction is due to our inability to comprehend infinity, and as such cannot get perfect measurements of starting conditions, and is not due to a lack of knowledge.]
+
+  As eluded to earlier, this project can be viewed as an attempt to describe the emergence of emergence. This appears somewhat self-referential, however this does not seem to be an issue.
+
+  In addition, we must define what we mean when we say multi-scale emergence. This term is used to define emergence that occurs between properties that at multiple scales. For example, emergence at the first scale is defined as emergence stemming from the basic agents of a system (the atoms), emergence at the next scale occurs between the emergent properties at the previous scale. Multi-scale emergence can be seen in animals, proteins and polysaccharides (and other molecules) can be viewed as the atoms of an animals. From these molecules we get emergence of cells, this is the first scale of emergence. These emergent cells then combine to produce emergent organs, second scale of emergence. Organs combine to form humans, making up the next scale. This continues possibly ad infinitum in a fractal nature (Depends on the observer).
+
+  From the description above, we can see that each scale could be taken as the atom of another ABM that describes the system through single-level emergence.
+
+
+
+\section{Preliminary corollaries}
+
+  \begin{corollary}
+    A system with a single agent cannot generate emergence.
+  \label{col:single_agent}
+  \end{corollary}
+  \begin{proof}
+
+    Any behaviour observed of the system is by definition behaviour that defined in the agents that encompass the system. Therefore, according to our definition, there cannot be emergence. 
+
+  \end{proof}
+
+
+  \begin{corollary}
+    Emergent properties do not need to be more complex than the agents that formed them in order to partake in higher-scale emergence
+    \label{col:emer_level}
+  \end{corollary}
+  \begin{proof}
+
+    Given that some scale $s_i$ can form emergent properties, replacing agents at any scale in $\{s_n | n \in \mathbb{Z} \wedge n \not = i \}$ with identical elements as in $s_i$ will lead to the same emergent properties since these are deterministic systems. Therefore, agents do not require more complexity than the agents in $s_i$.
+
+  \end{proof}
+
+
+\section{Assumptions}
+
+  The process of the modelling endeavours are built upon a number of assumptions of the behaviours that emergence requires. The first, small assumption, is that at least some agents can move according to a bias random walk. If all agents were stationary, no interaction could occur and hence this is a requirement.
+
+  There assumptions are necessary but not sufficient to guarantee emergence. Therefore, if emergent properties demonstrate these behaviours, they themselves can cause further emergence, hence garnering multi-scale emergence as defined in corollary \ref{col:emer_level}. 
+
+
+  \subsection{Heterogeneity}
+  
+    A heterogeneous system is one which is made up of different agents. This difference can be in their behaviours, but also differences in their environment. 
+
+
+    \subsubsection{Justification}
+
+      Below it is shown that a homogeneous system cannot give rise to emergence and hence heterogeneity is a required property of the system
+        
+      
+      \begin{lemma}
+        Systems of homogeneous agents are not able to create emergence. \todo{This needs to be verified and worked on}
+      \end{lemma}
+      \begin{proof}
+
+        Given a system $S$ and $n$ agents $a_n$, where $n > 1$ and $\forall i \leq n$, $a_i$ are identical and have the same actions $B$, we can show that such a system cannot give rise to an emergent property $P$. At time, $t$, 0, there is by definition no emergence. At $t=n$, given that $\forall a_i \in S$, $a_i$ experience the same environment and hence have the same state, and since the system is deterministic, they will all perform the same $b \in B$. Therefore, at $t=n+1$ all $a_i$ will again have the same state as one another and hence again perform the same $b \in B$.
+
+        Therefore, this system is the same as one that only contains a single agent. From corollary \ref{col:single_agent}, we know that such a system cannot produce emergence.
+
+      \end{proof}
+
+    \subsubsection{Method of implementation}
+      
+      Behaviours are implemented as classes and agents made up through composition of these behaviours. Agents will be supplied with a random assortment of possible behaviours.
+
+    \subsubsection{Pseudocode}
+      
+      \begin{verbatim}
+      // Upon initalisation of model
+      for number of agents in model:
+        // Add to model new agent with random choice behaviours
+        // Where possibleBehaviours is an array
+        behaviourChoice = randomChoice(possibleBehaviours) 
+        agent = new Agent(possibleBehaviours)
+        // Append agent to the models array of agents
+        model.agents.push_back(agent)
+      \end{verbatim}
+
+
+  \subsection{Encapsulation}
+  \label{sec: encap}
+      
+    Encapsulation is defined as "the action of enclosing something". For our purposes it describes the collecting of information in such a way that it is not readily available to the environment.
+
+    Can also be done by a relatedness variable, such that only these agents can interact with one another.
+
+    \subsubsection{Justification}
+      There are many examples of models that are able to show emergence at a single scale, but not multiple scales. Therefore, there the atomic agents must are endowed with some property that emergent elements are not. This property appears to be encapsulation. From personal experience, it often not considered that basic agents implicitly encapsulate method and information. This type of encapsulation is often not seen in emergent properties and appears to be the defining gap.
+
+      Even though this is one of the main features of object-oriented programming, which has allowed for the growth of use of ABMs. 
+
+    \todo{Something like "Dissipation of information is bad" but this contradicts the share of information statement.}
+
+      \begin{lemma}
+        Emergence cannot occur without encapsulation of information.
+      \end{lemma}
+      \begin{proof}
+        
+        This is harddddd
+
+      \end{proof}
+
+    \subsubsection{Method of implementation}
+      
+      Encapsulation will be a quasi-emergent behaviour in our model. Although it is a behaviour we are purposefully looking for, due to the method of implementation, it will be emergent (according to our definition).
+
+      Agents with this behaviour will have two attachment points, on either side ($<180$ degrees from each other to ensure formation of a circle). Each attachment point only allows for a single agent to attach.
+
+    \subsubsection{Pseudocode}
+
+      \begin{verbatim}
+      // Same code for right and left attachment point
+      for agents in model:
+        if agent x is near to agent y attachment point:
+          // link between x and y at y attachment point
+          To be confirmed... 
+
+      // Link is defined as a magnetic attraction between x and at the
+      // the attachment point
+      // Threshold is the strength of link
+      if distance between x and attachment point > threshold:
+        // Move x and attachment point closer together
+        distanceVector = posX - attachementPos // Element-wise 
+        moveVec = distanceVector * scaling // scaling < 0.5
+        posX = posX + moveVec
+      \end{verbatim}
+
+
+  \subsection{Share of information}
+  
+    Share of information is also a property that all systems that demonstrate emergence must have. 
+
+    \subsubsection{Justification}
+      
+    If information is not shared within the environment then only the agent itself can effect its state, if at all. And so, we get a system of isolated agents, which can each be viewed as their own system. And by corollary \ref{col:single_agent}, there can be no emergence in this.
+
+      \begin{lemma}
+        Emergence cannot occur without sharing of information.
+      \end{lemma}
+      \begin{proof}
+
+        In a system $S$ with $n$ agents such that $\forall i \leq n$, agent $a_i$ cannot share information and hence cannot effect the environment of agents in the set $\{ a_j \in S | i \not = j \}$. Given this condition, each $a_i$ in $S$ acts as it would if it was in a system, $S_i$ comprised of only agent $a_i$. Therefore $S$ can be described as the union of $S_i s$. Given corollary \ref{col:single_agent}, each $S_i$ cannot generate emergence, and hence their union cannot either. Therefore $S$ cannot give rise to emergence. 
+
+      \end{proof}
+
+    \subsubsection{Method of implementation}
+
+      At the lowest level, agents are able to share information through a number of interactions. These interactions stem from behaviours of moving agents; agents can collide with one another, can attract one another and form links (as described in section \ref{sec: encap}). At the next level up, sharing of information between emergent properties can occur through porous 'membranes' form from linking agents.
+
+    \subsubsection{Pseudocode}
+      
+      \begin{verbatim}
+        // Collisions
+        if distance of two agents < combined radii:
+          // Elastic collision between the two agents, 1 and 2
+          v1' = v1 - 2*m2 / M * np.dot(v1-v2, r1-r2) / d * (r1 - r2) 
+          v2' = v2 - 2*m1 / M * np.dot(v2-v1, r2-r1) / d * (r2 - r1)
+
+        // Attraction
+        if distance of two agents < attraction strength:
+          // posN is the position of agent N
+          // Move agents towards one another using distance vector 
+          distanceVector = pos1 - pos2 // Element-wise 
+          moveVec = distanceVector * scaling // scaling < 0.5
+          pos1 = pos1 - moveVec
+          pos2 = pos2 + moveVec
+          // Extra methods to ensure the two agents don't overlap
+
+        // Holes in links
+        To be confirmed...
+      \end{verbatim}
+
+
+\section{ABM}
+
+  \subsection{Additional behaviours}
+    \begin{enumerate}[label=\textbf{\alph*)}]
+      \item Collision
+
+    \end{enumerate}
+
+
+\section{Interesting things}
+
+  A system that generates emergent properties that recreate the original system, leads to an infinite, periodic fractal. 
+  \begin{itemize}
+    \item Is it possible?
+  \end{itemize}
+
+\end{document}
