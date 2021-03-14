@@ -85,6 +85,7 @@ This report will describe the assumptions and methods which we will use to attem
 
 
   \subsection{Heterogeneity}
+  \label{sec: hetro}
   
     A heterogeneous system is one which is made up of different agents. This difference can be in their behaviours, but also differences in their environment. 
 
@@ -135,14 +136,14 @@ This report will describe the assumptions and methods which we will use to attem
 
       Even though this is one of the main features of object-oriented programming, which has allowed for the growth of use of ABMs. 
 
-    \todo{Something like "Dissipation of information is bad" but this contradicts the share of information statement.}
+        Need to have the emergent properties encapsulated such that you can have interactions between these new 'agents'. Otherwise, you end up with a single 'agent' that is made up from all the basic atoms. Therefore, You get a single agent in the system which as before, cannot produce emergence. 
 
       \begin{lemma}
         Emergence cannot occur without encapsulation of information.
       \end{lemma}
       \begin{proof}
         
-        This is harddddd
+        Given a system $S$ and properties\footnote{Can be attributes, methods or  any other kind of storage/use of information} $P$ not encapsulated in any way other than being confined within $S$. Such a system can be viewed as a single agent in a larger system of systems $\mathbb{S}$, where $S$ acts as a single agent according to the behaviour defined by $P$. Thus, the behaviour within $S$ can be described as the behaviour of a single agent with properties $P$. And by corollary \ref{col:single_agent}, we know that such a system cannot produce emergence. Therefore, for emergence to occur, we require encapsulation, such that there is more than one agent in the system. 
 
       \end{proof}
 
@@ -219,18 +220,24 @@ This report will describe the assumptions and methods which we will use to attem
 
 \section{ABM}
 
-  \subsection{Additional behaviours}
-    \begin{enumerate}[label=\textbf{\alph*)}]
-      \item Collision
+To implement the properties laid out in this report, we will use an ABM in which we attempt to engineer into our atomic agents behaviours that will garner these properties. As already stated, the atomic agents already have these properties inherently due to being programmed as individual objects (using the OOP paradigm, specifically composition) their properties and methods are encapsulated in the code that defines them, they are heterogeneous since they start at different positions and hence experience differing environments and their methods allow transfer of information\footnote{They also have different behaviours as mentioned in section \ref{sec: hetro}}. The difficulty is found in finding the correct behaviours to garner these properties at the next scale, i.e. the first emergence scale. This is opposite to how emergence usually appears in research, as usually the basic behaviours are known and the emergence is the goal. In essence we are trying to reverse-engineer emergence.
 
-    \end{enumerate}
+  For the meantime, the ABM will be programmed in python, on a relatively small scale, using a simple visualisation method as a proof of concept. If we receive promising results, this will be up-scaled and replicated in a faster programming language that can handle more agents at one time, such as C/C++/Rust\footnote{Methods will also be used in the original python ABM to speed it up as much as possible, such as the use of efficient programming, concurrency and jit-compilers (Numba).}. 
+
+  \subsection{Behaviours}
+    \begin{itemize}
+      \item Collision
+      \item Attraction
+      \item Linking
+      \item ...
+    \end{itemize}
 
 
 \section{Interesting things}
 
   A system that generates emergent properties that recreate the original system, leads to an infinite, periodic fractal. 
-  \begin{itemize}
+  \begin{enumerate}[label=\textbf{\alph*)}]
     \item Is it possible?
-  \end{itemize}
+  \end{enumerate}
 
 \end{document}
