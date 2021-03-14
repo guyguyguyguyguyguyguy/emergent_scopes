@@ -31,12 +31,10 @@
 % Document
 \begin{document}
 \maketitle
-\vspace{-13mm}
-
-\section{Want to replace atom with another word}
+\vspace{-6mm}
 
 
-This report will describe the assumptions and methods which we will use to attempt to model emergence at multiple scopes. Assumptions will first be defined and justified, after-which the methods by which these assumptions will be implemented into an Agent-Based Model (ABM) will be described. Finally, the significance of this work will be laid out.
+This report will describe the assumptions and methods which we will use to attempt to model emergence at multiple scopes. Assumptions will first be defined and justified, after-which the methods by which these assumptions will be implemented into an Agent-Based Model (ABM) will be briefly described. Finally, the significance of this work will be laid out.
 
 
 \section{Emergence}
@@ -132,7 +130,7 @@ This report will describe the assumptions and methods which we will use to attem
     Can also be done by a relatedness variable, such that only these agents can interact with one another.
 
     \subsubsection{Justification}
-      There are many examples of models that are able to show emergence at a single scale, but not multiple scales. Therefore, there the atomic agents must are endowed with some property that emergent elements are not. This property appears to be encapsulation. From personal experience, it often not considered that basic agents implicitly encapsulate method and information. This type of encapsulation is often not seen in emergent properties and appears to be the defining gap.
+      There are many examples of models that are able to show emergence at a single scale, but not multiple scales. Therefore, there the foundational agents must are endowed with some property that emergent elements are not. This property appears to be encapsulation. From personal experience, it often not considered that basic agents implicitly encapsulate method and information. This type of encapsulation is often not seen in emergent properties and appears to be the defining gap.
 
       Even though this is one of the main features of object-oriented programming, which has allowed for the growth of use of ABMs. 
 
@@ -220,7 +218,7 @@ This report will describe the assumptions and methods which we will use to attem
 
 \section{ABM}
 
-To implement the properties laid out in this report, we will use an ABM in which we attempt to engineer into our atomic agents behaviours that will garner these properties. As already stated, the atomic agents already have these properties inherently due to being programmed as individual objects (using the OOP paradigm, specifically composition) their properties and methods are encapsulated in the code that defines them, they are heterogeneous since they start at different positions and hence experience differing environments and their methods allow transfer of information\footnote{They also have different behaviours as mentioned in section \ref{sec: hetro}}. The difficulty is found in finding the correct behaviours to garner these properties at the next scale, i.e. the first emergence scale. This is opposite to how emergence usually appears in research, as usually the basic behaviours are known and the emergence is the goal. In essence we are trying to reverse-engineer emergence.
+To implement the properties laid out in this report, we will use an ABM in which we attempt to engineer into our foundational agents behaviours that will garner these properties. As already stated, the foundational agents already have these properties inherently due to being programmed as individual objects (using the OOP paradigm, specifically composition) their properties and methods are encapsulated in the code that defines them, they are heterogeneous since they start at different positions and hence experience differing environments and their methods allow transfer of information\footnote{They also have different behaviours as mentioned in section \ref{sec: hetro}}. The difficulty is found in finding the correct behaviours to garner these properties at the next scale, i.e. the first emergence scale. This is opposite to how emergence usually appears in research, as usually the basic behaviours are known and the emergence is the goal. In essence we are trying to reverse-engineer emergence.
 
   For the meantime, the ABM will be programmed in python, on a relatively small scale, using a simple visualisation method as a proof of concept. If we receive promising results, this will be up-scaled and replicated in a faster programming language that can handle more agents at one time, such as C/C++/Rust\footnote{Methods will also be used in the original python ABM to speed it up as much as possible, such as the use of efficient programming, concurrency and jit-compilers (Numba).}. 
 
@@ -231,6 +229,13 @@ To implement the properties laid out in this report, we will use an ABM in which
       \item Linking
       \item ...
     \end{itemize}
+
+
+\section{Significance}
+
+At first glance this project appears somewhat contrived; we are trying to create a model that displays emergence at multiple scales, however, if we already know what the model will do, does this not contradict out definition of emergence? For this reason, the emergence that we hope to capture in this model can be viewed as quasi-emergence, which is sufficient for our interests. As opposed to much work on emergence, which described the emergent properties formed, we are attempting to define \textit{how} the emergence is formed. Hence, our interests are in the behaviours required and not in the emergent properties themselves. We are not attempting to model some real-world phenomena with known behaviours, but instead, we are attempting to model arbitrary emergence as a method to understand the minimal set of required behaviours for emergence.  
+
+The significance of this project is thus two-fold, on the first hand it attempts to answer the ontological question of "How do emergent properties come in to being". On a more technical side, having answered this question, this project subsequently supplies modellers a construct for which their models most follow if they want to model emergence at multiple scales.
 
 
 \section{Interesting things}
