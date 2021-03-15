@@ -8,6 +8,7 @@
 \usepackage{xpatch}
 \usepackage{bm}
 \usepackage[color=pink!140]{todonotes}
+\usepackage{parskip}
 
 % Commands
 \renewcommand\qedsymbol{$\blacksquare$}
@@ -25,35 +26,35 @@
 \makeatother
 
 % Title
-\title{Emergence at multiple scopes}
-\author{Guy Frankel}
+\title{Emergence across multiple scales}
+\author{}
 \date{}
 
 % Document
 \begin{document}
 \maketitle
-\vspace{-6mm}
+\vspace{-13mm}
 
 
-This report will describe the assumptions and methods which we will use to attempt to model emergence at multiple scopes. Having first defined what we mean by emergence, we will describe the assumptions we deem necessary for emergence and justify them. Subsequently, the methods by which these assumptions will be implemented into an Agent-Based Model (ABM) will be briefly described. Finally, the significance of this work will be laid out.
+This report will describe the assumptions and methods which I will use to attempt to model emergence at multiple scales. Having first defined what I mean by the term emergence, I will describe the assumptions I deem necessary for emergence and justify them. Subsequently, the methods by which these assumptions will be implemented into an Agent-Based Model (ABM) will be briefly described. Finally, the significance of this work will be laid out.
 
-To clear, our assumptions describe what a system must have to have the potential to give rise to emergence. Thus, to produce multi-scale emergence, we must be able to produce emergent properties (at the first emergent scale) that have these behaviours.
+To clarify, the assumptions describe behaviours a system must have in order to have the potential to give rise to emergence. Thus, to produce multi-scale emergence, a system must be able to produce emergent properties, at the first emergent scale, that have these behaviours.
 
 
 \section{Emergence}
 
-In the quest to produce emergence at multiple scales, we are in fact attempting to describe the emergence of emergence itself, in a sort of self-referential manner. Therefore, it is imperative to first define what it is meant when we talk of emergence. For our initial investigations we will take a rather basic (and potentially naive) definition of emergence; by which we define it as behaviour/property(s), that come to being in a system, that are not found in any of the systems constituent/fundamental elements. Chrutfield, et al. described this nicely when they defined emergence (innovation) occurring when one requires a new (more complex) language to describe the properties of the system. 
+In the quest to produce emergence at multiple scales, I am in fact attempting to describe the emergence of emergence itself\footnote{Self-referential, but does should not give rise to problems.}. Therefore, it is imperative to first define what it is meant when I talk of emergence. For my initial investigations I will take a rather basic (and potentially naive) definition of emergence; by which I define it as behaviour/property(s), that come to being in a system, that are not found in any of the systems constituent/fundamental elements. Chrutfield, et al. described this nicely when they defined emergence (innovation) occurring when one requires a new (more complex) language to describe the properties of the system. 
 
-  Since systems with emergence are by definition chaotic/at the edge of chaos and deterministic, this lack of prediction is due to our inability to comprehend infinity, and as such cannot get perfect measurements of starting conditions, and is not due to a lack of knowledge.
+Since systems with emergence are by definition chaotic/at the edge of chaos and deterministic, the lack of identification of such features, before experiencing the emergence, is due to our inability to comprehend infinity, and as such cannot get perfect measurements of starting conditions, and is not due to a lack of knowledge.
 
-  In addition, we must define what we mean when we say multi-scale emergence. This term is used to define emergence that occurs between properties that at multiple scales. For example, emergence at the first scale is defined as emergence stemming from the fundamental agents of a system (the atoms), emergence at the next scale thus occurs between the emergent properties produced by the fundamental agents (the previous scale) and so this continues up in scales. Multi-scale emergence can be seen in animals, proteins, polysaccharides and lipids\footnote{Among other molecules} can be viewed as the fundamental elements of an animals. From these molecules we get emergence of cells, this is the first scale of emergence. These emergent cells then combine to produce emergent organs, the second scale of emergence. Organs combine to form humans, making up the next scale. This appears to continue, possibly ad infinitum, in a fractal nature in both directions. 
+ In addition, I must define what I mean when I say multi-scale emergence. This term is used to define a system that gives rise to emergent properties over multiple scales. For example, emergence at the first scale is defined as emergence stemming from the fundamental agents of a system (the atoms), emergence at the next scale thus occurs between the emergent properties produced by the fundamental agents and so on, as this continues up in scales. Multi-scale emergence can, for example, be seen if we were to take proteins, polysaccharides and lipids\footnote{Among other molecules.} as the fundamental elements of animals. From these molecules  we get emergence of cells, this is the first scale of emergence. These emergent cells then combine to produce emergent organs, the second scale of emergence. Organs combine to form multi-cellular organisms, making up the next scale. This appears to continue, possibly ad infinitum, in a fractal nature in both directions. 
 
-  From the description above, we can see that each scale could be taken as the starting point (fundamental element).
+  From the description above, it can be seen that each scale could be taken as the starting point, as the fundamental element. 
   
 
 \section{Preliminary corollaries}
   
-  Justifications of our assumptions require these two following corollaries.  
+Justifications of the assumptions that follow, first require these two corollaries.  
 
   \begin{corollary}
     A system with a single agent cannot generate emergence.
@@ -61,7 +62,7 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
   \end{corollary}
   \begin{proof}
 
-    In a system $S$ with one agent $a$; any behaviour observed in $S$ is by definition behaviour defined in $a$. Therefore, according to our definition, there cannot be emergence. 
+   In a system $S$ with one agent $a$; any behaviour observed in $S$ is by definition behaviour defined in $a$. Therefore, according to our definition, there cannot be emergence. 
 
   \end{proof}
 
@@ -72,17 +73,18 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
   \end{corollary}
   \begin{proof}
 
-    Given that some scale $s_i$ can form emergent properties, replacing agents at any scale in $\{s_n | n \in \mathbb{Z} \wedge n \not = i \}$ with identical elements as in $s_i$ will lead to the same emergent properties since the systems are deterministic. Therefore, agents at any scale do not require more complexity than the agents in $s_i$.
+    Given that some scale $s_i$ can form emergent properties, replacing agents at any scale in $\{s_n | n \in \mathbb{Z} \wedge n \not = i \}$ with identical elements as in $s_i$ will lead to the same emergent properties since the systems are deterministic. Therefore, agents at any scale do not require more complexity than the agents in $s_i$ to produce emergence.
 
   \end{proof}
 
 
 \section{Assumptions}
 
-  The process of the modelling endeavours are built upon a number of assumptions on the behaviours that give rise to emergence. These assumptions are necessary but not sufficient to guarantee emergence. Therefore, if emergent properties demonstrate these behaviours, they have the potential to create further emergence at the next scale as defined in corollary \ref{col:emer_level}. 
+The process of the modelling endeavour is built upon a number of assumptions on the behaviours that give rise to emergence. These assumptions are necessary but not sufficient to guarantee emergence. Therefore, by corollary \ref{col:emer_level}, if emergent properties demonstrate these behaviours, they have the potential to create further emergence at the next scale.
 
-      There are many examples of models that are able to show emergence at a single scale, but not multiple scales. Therefore, in these models, the foundational agents must be endowed with some properties that the emergent elements are not. 
+      There are many examples of models that are able to show emergence at a single scale, but not multiple scales. Therefore, in these models, the foundational agents must be endowed with some properties that the emergent elements are not. This idea was the inspiration of the following assumptions.
 
+      
   \subsection{Heterogeneity}
   \label{sec: hetro}
   
@@ -95,15 +97,15 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
       \end{lemma}
       \begin{proof}
 
-        Given a system $S$ and $n$ agents $a_n$, where $n > 1$ and $\forall i \leq n$, $a_i$ are identical and have the same behaviours $B$, we can show by induction that such a system cannot give rise to an emergent property. At time, $t_0$, there is by definition no emergence. At $t_n$, given that $\forall a_i \in S$, $a_i$ experience the same environment and hence have the same state, they will all act according to the same $b \in B$. Therefore, at $t_{n+1}$ all $a_i$ will again have the same state as one another and hence again act according to the same $b \in B$.
+        Given a system $S$ and $n$ agents $a_n$, where $n > 1$ and $\forall i \leq n$, $a_i$ are identical and have the same behaviours $B$. At time, $t_0$, there is by definition no emergence. At $t_n$, given that $\forall a_i \in S$, $a_i$ experience the same environment and hence have the same state, they will all act according to the same $b \in B$. Therefore, at $t_{n+1}$ all $a_i$ will again have the same state as one another and hence again act according to the same $b \in B$.
 
-        Therefore, this system acts identically as one consisting of only a single agent. From corollary \ref{col:single_agent}, we know that such a system cannot produce emergence.
+        Therefore, this system acts identically as one consisting of only a single agent. From corollary \ref{col:single_agent}, I know that such a system cannot produce emergence.
 
       \end{proof}
 
     \subsubsection{Method of implementation}
       
-      Behaviours are implemented as classes and agents made up through composition of these behaviours. Agents will be supplied with a random assortment of possible behaviours.
+      Behaviours are implemented as classes and agents are endowed with a set of behaviours through composition of these classes. Agents are supplied with a random selection of possible behaviours.
 
     \subsubsection{Pseudocode}
       
@@ -120,7 +122,7 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
   \subsection{Encapsulation}
   \label{sec: encap}
       
-    Encapsulation is defined as "the action of enclosing something". For our purposes it describes the collecting of information in such a way that it can be shared between all related agents, but is not readily available to the environment. In regards to ABMs, it is something that is implicitly programmed into the fundamental agents.
+    Encapsulation is defined as "the action of enclosing something". For our purposes it describes the collection of information in such a way that it can be readily shared between all related agents, but is not freely available to the environment. In regards to ABMs, it is something that is implicitly programmed into the fundamental agents.
 
     \subsubsection{Justification}
 
@@ -131,13 +133,13 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
       \end{lemma}
       \begin{proof}
         
-        Given a system $S$ and properties\footnote{Can be attributes, methods or  any other kind of storage/use of information} $\bm{P}$ not encapsulated in any way other than being confined within $S$. Since, $S$ is itself encapsulating $\bm{P}$, such a system can be viewed as a single agent in a larger system of systems $\bm{S}$, where $S$ acts as a single agent according to the behaviour defined by $\bm{P}$. And by corollary \ref{col:single_agent}, we know that such a system cannot produce emergence. Therefore, for emergence to occur, we require encapsulation, such that there is more than one agent in the system. 
+        Given a system $S$ and properties\footnote{Can be attributes, methods or  any other kind of storage/use of information} $\bm{P}$ not encapsulated in any way other than being confined within $S$. Since, $S$ is itself encapsulating $\bm{P}$, such a system can be viewed as a single agent in a larger system of systems $\bm{S}$ comprised of only $S$. Therefore, by corollary \ref{col:single_agent}, we know that $S$ cannot produce emergence as it acts the same as a single agent. Therefore, for emergence to occur, we require encapsulation, such that there is more than one agent in the system. 
 
       \end{proof}
 
     \subsubsection{Method of implementation}
       
-      Encapsulation will be a quasi-emergent behaviour in our model. Although it is a behaviour we are purposefully looking for, due to the method of implementation, it will be emergent (according to our definition).
+      Encapsulation will be a quasi-emergent behaviour in our model. Although it is a behaviour we are purposefully looking for, due to the method of implementation it will be emergent (according to our definition).
 
       Agents with this behaviour will have two attachment points, on either side ($<180$ degrees from each other to ensure formation of a circle). Where each attachment point only allows for a single agent to attach. The implementation of this is still not fully worked out.
 
@@ -164,20 +166,20 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
   
     \subsubsection{Justification}
       
-    If information is not shared within the environment then only the agent itself can effect its state, if at all. And so, we get a system of isolated agents, which can each be viewed as their own system. And by corollary \ref{col:single_agent}, there can be no emergence in this.
+   If information is not shared within the environment then only the agent itself can effect its state, if at all. And so, we get a system of isolated agents, which can each be viewed as their own system. And by corollary \ref{col:single_agent}, there can be no emergence in this.
 
       \begin{lemma}
         Emergence cannot occur without sharing of information.
       \end{lemma}
       \begin{proof}
 
-        In a system $S$ with $n$ agents such that $\forall i \leq n$, agent $a_i$ cannot share information and hence cannot effect the environment of agents in the set $\{ a_j \in S | i \not = j \}$. Given this condition, each $a_i$ in $S$ acts as it would if it was in an isolated system, $S_i$ comprised of only this agent. Therefore $\bigcap_{i=1}^nS_i = \emptyset$. Given corollary \ref{col:single_agent}, each $S_i$ cannot generate emergence, and hence $S$ cannot either. 
+       In a system $S$ with $n$ agents such that $\forall i \leq n$, agent $a_i$ cannot share information and hence cannot effect the environment of agents in the set $\{ a_j \in S | i \not = j \}$. Given this condition, each $a_i$ in $S$ acts as it would if it was in an isolated system, $S_i$ comprised of only this agent. Therefore $\bigcap_{i=1}^nS_i = \emptyset$. Given corollary \ref{col:single_agent}, each $S_i$ cannot generate emergence, and hence $S$ cannot either. 
 
       \end{proof}
 
     \subsubsection{Method of implementation}
 
-      Agents are able to share information through a number of interactions. These interactions stem from behaviours of moving agents; agents can collide with one another, can attract one another and form links (as described in section \ref{sec: encap}). At the next emergent scale up, sharing of information between emergent properties can occur through porous 'membranes' formed by linking agents.
+      Agents are able to share information through a number of interactions. These interactions stem from behaviours of moving agents; agents can collide with one another, can attract or repel one another and form links (as described in section \ref{sec: encap}). At the next emergent scale up, sharing of information between emergent properties can occur through porous 'membranes' formed by linking agents.
 
     \subsubsection{Pseudocode}
       
@@ -205,9 +207,9 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
 
 \section{ABM}
 
-  To implement the properties laid out in this report, we will use an ABM in which we attempt to engineer into our foundational agents behaviours to produce these properties. As already stated, the foundational agents already have these properties inherently due to being programmed as individual objects (using the OOP paradigm, specifically composition). Their properties and methods are encapsulated in the code that defines them, they are heterogeneous since they start at different positions, hence experience differing environments\footnote{They also have different behaviours as mentioned in section \ref{sec: hetro}} and their methods allow transfer of information. The difficulty is found in finding the correct behaviours to garner these properties at the next scale, i.e. the first emergence scale. This is opposite to how emergence usually appears in research, as often the basic behaviours are known and the emergence is the goal. In essence we are trying to reverse-engineer emergence.
+  I will use an ABM in which I attempt to engineer into our foundational agents behaviours that will allow them to produce emergent entities with the properties laid out above. As already stated, the foundational agents already have these properties inherently due to being programmed as individual objects (using the OOP paradigm, specifically composition). Their properties and methods are encapsulated in the code that defines them, they are heterogeneous since they start at different positions, hence experience differing environments\footnote{They also have different behaviours as mentioned in section \ref{sec: hetro}} and their methods allow transfer of information. The difficulty is found in finding the correct behaviours to garner these properties at the next scale, i.e. the first emergence scale. In essence I am trying to reverse-engineer emergence.
 
-    For the meantime, the ABM will be programmed in python, on a relatively small scale, using a simple visualisation method as a proof of concept. If we receive promising results, this will be up-scaled and replicated in a faster programming language that can handle more agents, such as C/C++/Rust\footnote{Methods will also be implemented in the python ABM to speed it up as much as possible, such as the use of efficient programming, concurrency and jit-compilers (Numba).}. 
+    For the meantime, the ABM will be programmed in python, on a relatively small scale, using a simple visualisation method as a proof of concept. If I receive promising results, this will be up-scaled and replicated in a faster programming language that can handle more agents, such as C/C++/Rust\footnote{Methods will also be implemented in the python ABM to speed it up as much as possible, such as the use of efficient programming, concurrency and jit-compilers (Numba).}. 
 
     \subsection{Behaviours}
       
@@ -216,6 +218,7 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
       \begin{itemize}
         \item Collision
         \item Attraction
+        \item Repulsion
         \item Linking
         \item ...
       \end{itemize}
@@ -223,16 +226,16 @@ In the quest to produce emergence at multiple scales, we are in fact attempting 
 
 \section{Significance}
 
-  At first glance this project appears somewhat contrived; we are trying to create a model that displays emergence at multiple scales, however, if we already know what the model will do, does this not contradict out definition of emergence? For this reason, the emergence that we hope to capture in this model can be viewed as quasi-emergence, which is sufficient for our interests. As opposed to much work on emergence, which described the emergent properties formed, we are attempting to define \textit{how} the emergence is formed. Hence, our interests are in the behaviours required and not in the emergent properties themselves. We are not attempting to model some real-world phenomena with known behaviours, but instead, we are attempting to model arbitrary emergence as a method to understand the minimal set of required behaviours required.  
+  At first glance this project appears somewhat contrived; I am trying to create a model that displays emergence at multiple scales, however, if I already know what the model will do, does this not contradict out definition of emergence? For this reason, the emergence that I hope to capture in this model can be viewed as quasi-emergence, which is sufficient for our interests. As opposed to much work on emergence, which described the emergent properties formed, I am attempting to define \textit{how} the emergence is formed. Hence, our interests are in the behaviours required and not in the emergent properties themselves. I am not attempting to model some real-world phenomena with known behaviours, but instead, am attempting to model arbitrary emergence as a method to understand the minimal set of required behaviours. 
 
-  The significance of this project is thus two-fold, on the first hand it attempts to answer the ontological question of "How do emergent properties come in to being". On a more technical side, having answered this question, this project subsequently supplies modellers a construct for which their models most follow if they want to model emergence at multiple scales.
+  The significance of this project is thus two-fold, on the first hand it attempts to answer the ontological question of "How do emergent properties come in to being". On a more technical side, having answered this question, this project subsequently supplies modellers a construct for which their models must follow if they want to model emergence at multiple scales.
 
 
 \section{Interesting things}
 
-  A system that generates emergent properties that recreate the original system, leads to an infinite, periodic fractal. 
   \begin{enumerate}[label=\textbf{\alph*)}]
-    \item Is it possible?
+    \item A system that generates itself at the next emergent scale (self-replicating emergent system, fractal)
+    \item A system that generates emergent properties that recreate the original system (self-replicating, periodic, emergent system, fractal)
   \end{enumerate}
 
 \end{document}
