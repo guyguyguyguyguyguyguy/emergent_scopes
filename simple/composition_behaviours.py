@@ -233,16 +233,15 @@ class Linking(Behaviour):
         self.left = False
         self.right = False
 
-
     @staticmethod
-    def left_link(agent: agent.Agent) -> np.ndarray:
-        return agent.pos + np.array([agent.radius, 0])
+    def links(agent: agent.Agent, angle: float) -> tuple[np.ndarray, np.ndarray]:
+        centre = agent.pos
+        _angle = (np.pi - angle)/2
+        right = centre + np.array([agent.radius*np.cos(_angle), agent.radius*np.sin(_angle)])
+        left = centre + np.array([agent.radius*np.cos(np.pi - _angle), agent.radius*np.sin(np.pi - _angle)])
+        return right, left
 
-
-    @staticmethod
-    def right_link(agent: agent.Agent) -> np.ndarray:
-        return agent.pos - np.array([agent.radius, 0])
-
+    
     def link(self, agent: agent.Agent) -> None:
         if not self.right and (linking_neighs := [x for x in agent.model.agents if helper.distance_pos(x.pos, right_link := self.right_link(agent)) < x.radius]):
             print('Am here')
@@ -259,7 +258,6 @@ class Linking(Behaviour):
             
             self.right = True
 
-    
 
     def step(self, agent: agent.Agent) -> None:
         self.link(agent)
