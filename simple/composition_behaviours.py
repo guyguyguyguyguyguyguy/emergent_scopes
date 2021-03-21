@@ -6,7 +6,7 @@ from itertools import combinations
 from typing import List, Tuple
 from operator import add
 import helper
-import agent 
+import agent
 
 
 def in_bounds(agent: agent.Agent) -> None:
@@ -34,10 +34,6 @@ class Behaviour(ABC):
         pass
 
 
-"""
-TODO: This cannot be random! Then the stystem is not deterministic and hence cannot be chaotic
-!!!!!!!!!!!!!!!
-""" 
 class RandMov(Behaviour):
 
     """
